@@ -34,9 +34,9 @@ export function Header() {
   }
 
   return (
-    <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/95 shadow-header backdrop-blur">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
-        <Link href="/" className="text-xl font-bold text-emerald-700">
+        <Link href="/" className="text-xl font-bold text-primary transition-colors hover:text-primary-dark">
           عقار
         </Link>
 
@@ -46,8 +46,8 @@ export function Header() {
               key={link.href}
               href={link.href}
               className={cn(
-                'text-sm font-medium transition-colors hover:text-emerald-700',
-                pathname === link.href ? 'text-emerald-700' : 'text-slate-600',
+                'text-sm font-medium transition-colors hover:text-primary',
+                pathname === link.href ? 'text-primary' : 'text-slate-600',
               )}
             >
               {link.label}

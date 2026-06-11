@@ -33,7 +33,7 @@ export default function ReviewsPage() {
             <div className="flex items-center justify-between">
               <Link
                 href={`/properties/${review.propertyId}`}
-                className="font-medium hover:text-emerald-700"
+                className="font-medium hover:text-primary"
               >
                 عقار
               </Link>

@@ -12,6 +12,8 @@ export type PropertyStatus =
   | 'SOLD'
   | 'RENTED'
 
+export type RentalSource = 'DIRECT_BOOKING' | 'NEGOTIATION'
+
 export type OfferStatus =
   | 'PENDING'
   | 'NEGOTIATING'
@@ -52,6 +54,16 @@ export interface PropertyImage {
   order: number
 }
 
+export interface PropertyRental {
+  agreedPrice: number
+  pricePeriod: PricePeriod
+  duration: number
+  startedAt: string
+  endsAt: string
+  source: RentalSource
+  tenant?: User
+}
+
 export interface Property {
   id: string
   title: string
@@ -69,6 +81,7 @@ export interface Property {
   areaSize?: number | null
   isNegotiable?: boolean
   status?: PropertyStatus
+  rental?: PropertyRental | null
   parentCategoryId?: string
   parentCategory?: { id: string; name: string; slug: string } | null
   subcategoryId?: string
@@ -147,6 +160,7 @@ export interface OfferHistoryItem {
   id: string
   price: number
   pricePeriod: PricePeriod
+  duration?: number
   notes?: string | null
   senderRole: OfferSenderRole
   createdAt: string
@@ -157,6 +171,7 @@ export interface PriceOffer {
   propertyId: string
   price: number
   pricePeriod: PricePeriod
+  duration?: number
   notes?: string | null
   status: OfferStatus
   property?: Property
@@ -172,6 +187,14 @@ export interface PriceOffer {
 export interface CreateOfferInput {
   price: number
   pricePeriod: PricePeriod
+  duration: number
+  notes?: string
+}
+
+export interface CreateBookingInput {
+  propertyId: string
+  duration: number
+  pricePeriod: PricePeriod
   notes?: string
 }
 
@@ -179,7 +202,12 @@ export interface Booking {
   id: string
   propertyId: string
   status: BookingStatus
-  scheduledAt?: string | null
+  duration?: number
+  pricePeriod?: PricePeriod
+  notes?: string | null
+  agreedPrice?: number
+  startsAt?: string | null
+  endsAt?: string | null
   property?: Property
   createdAt: string
 }

@@ -40,7 +40,7 @@ export default function ForgotPasswordPage() {
         </CardHeader>
         <CardContent>
           {isSubmitSuccessful ? (
-            <p className="text-center text-sm text-emerald-700">
+            <p className="text-center text-sm text-primary">
               تم إرسال رمز الاستعادة إلى بريدك الإلكتروني.
             </p>
           ) : (
@@ -58,7 +58,7 @@ export default function ForgotPasswordPage() {
             </form>
           )}
           <p className="mt-4 text-center text-sm">
-            <Link href="/auth/login" className="text-emerald-600 hover:underline">
+            <Link href="/auth/login" className="text-primary hover:underline">
               العودة لتسجيل الدخول
             </Link>
           </p>

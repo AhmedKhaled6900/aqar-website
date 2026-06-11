@@ -4,16 +4,18 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 disabled:pointer-events-none disabled:opacity-50',
+  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98]',
   {
     variants: {
       variant: {
-        default: 'bg-emerald-600 text-white hover:bg-emerald-700',
-        secondary: 'bg-slate-100 text-slate-900 hover:bg-slate-200',
-        outline: 'border border-slate-200 bg-white hover:bg-slate-50',
-        ghost: 'hover:bg-slate-100',
-        destructive: 'bg-red-600 text-white hover:bg-red-700',
-        link: 'text-emerald-600 underline-offset-4 hover:underline',
+        default:
+          'bg-primary text-white shadow-soft hover:bg-primary-dark hover:shadow-soft-lg',
+        secondary: 'bg-slate-100 text-slate-900 hover:bg-slate-200 shadow-soft',
+        outline:
+          'border border-slate-200 bg-white shadow-soft hover:border-primary/30 hover:bg-primary-light',
+        ghost: 'hover:bg-primary-light hover:text-primary',
+        destructive: 'bg-red-600 text-white hover:bg-red-700 shadow-soft',
+        link: 'text-primary underline-offset-4 hover:text-primary-dark hover:underline',
       },
       size: {
         default: 'h-10 px-4 py-2',

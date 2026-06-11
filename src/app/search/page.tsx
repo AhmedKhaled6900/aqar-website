@@ -12,7 +12,7 @@ export default function SearchPage() {
       <p className="mb-8 text-slate-600">
         بحث ذكي بالذكاء الاصطناعي — قريباً. استخدم البحث التقليدي أدناه.
       </p>
-      <div className="mx-auto max-w-4xl rounded-2xl border border-dashed border-emerald-300 bg-emerald-50 p-8 text-center text-emerald-800">
+      <div className="mx-auto max-w-4xl rounded-2xl border border-dashed border-primary/30 bg-primary-light p-8 text-center text-primary">
         AI Search — قريباً
       </div>
       <div className="mx-auto mt-8 max-w-4xl">

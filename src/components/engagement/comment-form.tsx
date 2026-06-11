@@ -28,7 +28,7 @@ export function CommentForm({ propertyId }: CommentFormProps) {
   if (!user) {
     return (
       <p className="text-sm text-slate-500">
-        <Link href="/auth/login" className="text-emerald-600 hover:underline">
+        <Link href="/auth/login" className="text-primary hover:underline">
           سجّل الدخول
         </Link>{' '}
         لإضافة تعليق

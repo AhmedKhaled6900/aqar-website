@@ -1,7 +1,11 @@
 import { MAX_OFFERS_PER_PARTY } from '@/constants/offers'
 import type { PriceOffer, PricePeriod, User } from '@/lib/types'
 
-export function formatOfferPrice(price: number, pricePeriod: PricePeriod): string {
+export function formatOfferPrice(
+  price: number,
+  pricePeriod: PricePeriod,
+  duration?: number,
+): string {
   const formatted = new Intl.NumberFormat('ar-SA', {
     style: 'currency',
     currency: 'SAR',
@@ -14,7 +18,16 @@ export function formatOfferPrice(price: number, pricePeriod: PricePeriod): strin
     YEAR: 'سنوياً',
   }
 
-  return `${formatted} / ${periodLabels[pricePeriod]}`
+  const base = `${formatted} / ${periodLabels[pricePeriod]}`
+  if (duration != null && duration > 0) {
+    const unitLabels: Record<PricePeriod, string> = {
+      DAY: 'يوم',
+      MONTH: 'شهر',
+      YEAR: 'سنة',
+    }
+    return `${base} × ${duration} ${unitLabels[pricePeriod]}`
+  }
+  return base
 }
 
 export function canCustomerCreateOffer(user: User | null): boolean {

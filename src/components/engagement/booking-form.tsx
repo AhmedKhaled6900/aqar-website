@@ -13,33 +13,36 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { offerSchema, type OfferInput } from '@/schemas/property'
-import type { PricePeriod } from '@/lib/types'
+import { bookingSchema, type BookingInput } from '@/schemas/property'
 import { PRICE_PERIOD_LABELS } from '@/constants/offers'
+import { formatPrice } from '@/lib/utils'
+import type { PricePeriod, Property } from '@/lib/types'
 
-interface OfferFormProps {
-  defaultPricePeriod?: PricePeriod
+interface BookingFormProps {
+  property: Property
   submitLabel?: string
   isPending?: boolean
-  onSubmit: (data: OfferInput) => Promise<void>
+  onSubmit: (data: BookingInput) => Promise<void>
 }
 
-export function OfferForm({
-  defaultPricePeriod = 'MONTH',
-  submitLabel = 'إرسال العرض',
+export function BookingForm({
+  property,
+  submitLabel = 'تأكيد الحجز',
   isPending,
   onSubmit,
-}: OfferFormProps) {
+}: BookingFormProps) {
+  const defaultPeriod = property.pricePeriod ?? 'MONTH'
+
   const {
     register,
     handleSubmit,
     setValue,
     watch,
     formState: { errors },
-  } = useForm<OfferInput>({
-    resolver: zodResolver(offerSchema),
+  } = useForm<BookingInput>({
+    resolver: zodResolver(bookingSchema),
     defaultValues: {
-      pricePeriod: defaultPricePeriod,
+      pricePeriod: defaultPeriod,
       duration: 1,
     },
   })
@@ -48,16 +51,11 @@ export function OfferForm({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="price">السعر (ر.س)</Label>
-        <Input
-          id="price"
-          type="number"
-          {...register('price', { valueAsNumber: true })}
-        />
-        {errors.price && (
-          <p className="text-sm text-red-600">{errors.price.message}</p>
-        )}
+      <div className="rounded-lg bg-primary-light p-3 text-sm text-primary">
+        سعر الإعلان:{' '}
+        <span className="font-semibold">
+          {formatPrice(property.price, property.purpose, property.pricePeriod)}
+        </span>
       </div>
 
       <div className="space-y-2">
@@ -88,7 +86,7 @@ export function OfferForm({
           id="duration"
           type="number"
           min={1}
-          placeholder="مثال: 12"
+          placeholder="مثال: 12 شهر"
           {...register('duration', { valueAsNumber: true })}
         />
         {errors.duration && (
@@ -102,7 +100,7 @@ export function OfferForm({
       </div>
 
       <Button type="submit" disabled={isPending} className="w-full">
-        {isPending ? 'جاري الإرسال...' : submitLabel}
+        {isPending ? 'جاري الحجز...' : submitLabel}
       </Button>
     </form>
   )

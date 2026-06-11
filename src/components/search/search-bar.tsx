@@ -54,7 +54,7 @@ export function SearchBar({ compact, defaultValues }: SearchBarProps) {
       className={
         compact
           ? 'flex flex-col gap-3 sm:flex-row'
-          : 'rounded-2xl border border-slate-200 bg-white p-4 shadow-lg sm:p-6'
+          : 'animate-slide-up rounded-2xl border border-slate-200/80 bg-white p-4 shadow-soft-lg sm:p-6'
       }
     >
       <div className="grid flex-1 grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">

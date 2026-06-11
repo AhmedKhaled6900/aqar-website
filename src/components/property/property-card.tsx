@@ -32,11 +32,14 @@ export function PropertyCard({ property, variant = 'grid' }: PropertyCardProps) 
           className="object-cover transition-transform group-hover:scale-105"
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
         />
-        <div className="absolute top-3 right-3 flex gap-2">
+        <div className="absolute top-3 right-3 flex flex-wrap justify-end gap-2">
           <Badge variant={property.purpose === 'SALE' ? 'sale' : 'rent'}>
             {property.purpose === 'SALE' ? 'بيع' : 'إيجار'}
           </Badge>
-          {property.isNegotiable && (
+          {property.status === 'RENTED' && (
+            <Badge variant="outline">مؤجرة</Badge>
+          )}
+          {property.isNegotiable && property.status !== 'RENTED' && (
             <Badge variant="secondary">قابل للتفاوض</Badge>
           )}
         </div>
@@ -44,14 +47,14 @@ export function PropertyCard({ property, variant = 'grid' }: PropertyCardProps) 
       <CardContent
         className={cn('p-4', variant === 'list' && 'flex flex-1 flex-col justify-center')}
       >
-        <h3 className="line-clamp-1 font-semibold text-slate-900 group-hover:text-emerald-700">
+        <h3 className="line-clamp-1 font-semibold text-slate-900 group-hover:text-primary">
           {property.title}
         </h3>
         <p className="mt-1 flex items-center gap-1 text-sm text-slate-500">
           <MapPin className="h-3.5 w-3.5" />
           {property.city} — {property.area}
         </p>
-        <p className="mt-2 text-lg font-bold text-emerald-700">
+        <p className="mt-2 text-lg font-bold text-primary">
           {formatPrice(property.price, property.purpose, property.pricePeriod)}
         </p>
         <div className="mt-3 flex items-center gap-4 text-sm text-slate-500">
@@ -82,7 +85,7 @@ export function PropertyCard({ property, variant = 'grid' }: PropertyCardProps) 
     <Link href={`/properties/${property.id}`} className="group block">
       <Card
         className={cn(
-          'overflow-hidden transition-shadow hover:shadow-md',
+          'card-interactive overflow-hidden',
           variant === 'list' && 'flex flex-col sm:flex-row',
         )}
       >

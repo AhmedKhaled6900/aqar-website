@@ -4,6 +4,7 @@ import { PropertyGallery } from '@/components/property/property-gallery'
 import { PropertyMap } from '@/components/property/property-map'
 import { PropertyCard } from '@/components/property/property-card'
 import { PropertyActions } from '@/components/property/property-actions'
+import { PropertyRentalInfo } from '@/components/property/property-rental-info'
 import { PropertyDetailEngagement } from '@/components/property/property-detail-engagement'
 import { Badge } from '@/components/ui/badge'
 import {
@@ -89,7 +90,10 @@ export default async function PropertyDetailPage({ params }: PageProps) {
                 {property.purpose === 'SALE' ? 'بيع' : 'إيجار'}
               </Badge>
               <Badge variant="secondary">{property.category?.name}</Badge>
-              {property.isNegotiable && (
+              {property.status === 'RENTED' && (
+                <Badge variant="outline">مؤجرة</Badge>
+              )}
+              {property.isNegotiable && property.status !== 'RENTED' && (
                 <Badge variant="outline">قابل للتفاوض</Badge>
               )}
             </div>
@@ -100,7 +104,7 @@ export default async function PropertyDetailPage({ params }: PageProps) {
               <MapPin className="h-4 w-4" />
               {property.city} — {property.area} — {property.address}
             </p>
-            <p className="mt-4 text-2xl font-bold text-emerald-700">
+            <p className="mt-4 text-2xl font-bold text-primary">
               {formatPrice(property.price, property.purpose, property.pricePeriod)}
             </p>
             <div className="mt-4 flex flex-wrap gap-6 text-slate-600">
@@ -146,8 +150,13 @@ export default async function PropertyDetailPage({ params }: PageProps) {
         </div>
 
         <aside className="space-y-4 lg:sticky lg:top-20 lg:self-start">
+          <PropertyRentalInfo
+            propertyId={id}
+            initialRental={property.rental}
+            initialStatus={property.status}
+          />
           <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-            <p className="text-2xl font-bold text-emerald-700">
+            <p className="text-2xl font-bold text-primary">
               {formatPrice(property.price, property.purpose, property.pricePeriod)}
             </p>
             {property.owner && (

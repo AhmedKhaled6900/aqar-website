@@ -72,7 +72,7 @@ export function LoginForm() {
           </form>
 
           <div className="mt-4 text-center text-sm">
-            <Link href="/auth/forgot-password" className="text-emerald-600 hover:underline">
+            <Link href="/auth/forgot-password" className="text-primary hover:underline">
               نسيت كلمة المرور؟
             </Link>
           </div>
@@ -83,7 +83,7 @@ export function LoginForm() {
 
           <p className="mt-4 text-center text-sm text-slate-600">
             ليس لديك حساب؟{' '}
-            <Link href="/auth/register" className="text-emerald-600 hover:underline">
+            <Link href="/auth/register" className="text-primary hover:underline">
               إنشاء حساب
             </Link>
           </p>

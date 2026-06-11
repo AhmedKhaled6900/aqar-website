@@ -44,7 +44,7 @@ export function PropertyGallery({ images, title }: PropertyGalleryProps) {
               onClick={() => setActiveIndex(i)}
               className={cn(
                 'relative h-16 w-24 shrink-0 overflow-hidden rounded-lg border-2',
-                i === activeIndex ? 'border-emerald-600' : 'border-transparent',
+                i === activeIndex ? 'border-primary' : 'border-transparent',
               )}
             >
               <Image

@@ -4,7 +4,8 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useAxiosInstance } from '@/hooks/useAxiosInstance'
 import { normalizePaginatedResponse } from '@/lib/api/pagination'
 import { getAccessToken } from '@/lib/auth/tokens'
-import type { Booking, PaginatedResponse } from '@/lib/types'
+import type { Booking, CreateBookingInput, PaginatedResponse } from '@/lib/types'
+import type { BookingInput } from '@/schemas/property'
 
 export function useMyBookings() {
   const axios = useAxiosInstance()
@@ -22,18 +23,20 @@ export function useMyBookings() {
   })
 }
 
-export function useCreateBooking() {
+export function useCreateBooking(propertyId: string) {
   const axios = useAxiosInstance()
   const queryClient = useQueryClient()
 
   return useMutation({
-    meta: { successMessage: 'تم إرسال طلب الحجز بنجاح' },
-    mutationFn: async (propertyId: string) => {
-      const { data } = await axios.post<Booking>('/bookings', { propertyId })
+    meta: { successMessage: 'تم تأجير الوحدة بنجاح' },
+    mutationFn: async (input: BookingInput) => {
+      const body: CreateBookingInput = { propertyId, ...input }
+      const { data } = await axios.post<Booking>('/bookings', body)
       return data
     },
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['bookings'] })
+      void queryClient.invalidateQueries({ queryKey: ['properties'] })
     },
   })
 }

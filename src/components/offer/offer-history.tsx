@@ -29,8 +29,8 @@ export function OfferHistory({ history }: OfferHistoryProps) {
                 {new Date(item.createdAt).toLocaleString('ar-SA')}
               </span>
             </div>
-            <p className="mt-1 font-bold text-emerald-700">
-              {formatOfferPrice(item.price, item.pricePeriod)}
+            <p className="mt-1 font-bold text-primary">
+              {formatOfferPrice(item.price, item.pricePeriod, item.duration)}
             </p>
             {item.notes && (
               <p className="mt-1 text-sm text-slate-600">{item.notes}</p>

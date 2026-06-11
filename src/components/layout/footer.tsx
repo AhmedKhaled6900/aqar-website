@@ -14,7 +14,7 @@ export function Footer() {
       <div className="container mx-auto px-4 py-12">
         <div className="grid gap-8 md:grid-cols-3">
           <div>
-            <h3 className="text-lg font-bold text-emerald-700">عقار</h3>
+            <h3 className="text-lg font-bold text-primary">عقار</h3>
             <p className="mt-2 text-sm text-slate-600">
               منصة عقارية سعودية للبحث عن العقارات للبيع والإيجار بثقة وأمان.
             </p>
@@ -26,7 +26,7 @@ export function Footer() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-slate-600 hover:text-emerald-700"
+                    className="text-sm text-slate-600 transition-colors hover:text-primary"
                   >
                     {link.label}
                   </Link>

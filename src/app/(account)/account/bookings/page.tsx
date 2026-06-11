@@ -2,14 +2,18 @@
 
 import { EmptyState } from '@/components/common/empty-state'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { useMyBookings, useCancelBooking } from '@/features/bookings/useBookings'
+import { useMyBookings } from '@/features/bookings/useBookings'
+import { BOOKING_STATUS_LABELS } from '@/constants/rental'
+import {
+  formatRentalPeriod,
+  formatRentalPrice,
+  getRentalSourceLabel,
+} from '@/utils/rental'
 import Link from 'next/link'
 
 export default function BookingsPage() {
   const { data, isLoading } = useMyBookings()
-  const cancelBooking = useCancelBooking()
 
   if (isLoading) {
     return <div className="h-40 animate-pulse rounded-xl bg-slate-100" />
@@ -21,7 +25,7 @@ export default function BookingsPage() {
     return (
       <EmptyState
         title="لا توجد حجوزات"
-        description="احجز زيارة لعقار من صفحة التفاصيل"
+        description="احجز وحدة للإيجار مباشرة من صفحة تفاصيل العقار"
         actionLabel="تصفح العقارات"
         actionHref="/properties"
       />
@@ -32,33 +36,55 @@ export default function BookingsPage() {
     <div className="space-y-4">
       {items.map((booking) => (
         <Card key={booking.id}>
-          <CardContent className="flex items-center justify-between p-4">
-            <div>
-              <Link
-                href={`/properties/${booking.propertyId}`}
-                className="font-semibold hover:text-emerald-700"
-              >
-                {booking.property?.title ?? 'عقار'}
-              </Link>
-              {booking.scheduledAt && (
-                <p className="mt-1 text-sm text-slate-500">
-                  {new Date(booking.scheduledAt).toLocaleDateString('ar-SA')}
-                </p>
-              )}
-            </div>
-            <div className="flex items-center gap-2">
-              <Badge variant="secondary">{booking.status}</Badge>
-              {booking.status === 'PENDING' && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => cancelBooking.mutate(booking.id)}
-                  disabled={cancelBooking.isPending}
+          <CardContent className="space-y-3 p-4">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <Link
+                  href={`/properties/${booking.propertyId}`}
+                  className="font-semibold hover:text-primary"
                 >
-                  إلغاء
-                </Button>
-              )}
+                  {booking.property?.title ?? 'عقار'}
+                </Link>
+                {booking.agreedPrice != null && booking.pricePeriod && (
+                  <p className="mt-1 text-lg font-bold text-primary">
+                    {formatRentalPrice(booking.agreedPrice, booking.pricePeriod)}
+                  </p>
+                )}
+              </div>
+              <Badge variant="secondary">
+                {BOOKING_STATUS_LABELS[booking.status] ?? booking.status}
+              </Badge>
             </div>
+
+            {booking.duration != null && booking.pricePeriod && (
+              <p className="text-sm text-slate-600">
+                {formatRentalPeriod(
+                  booking.duration,
+                  booking.pricePeriod,
+                  booking.startsAt ?? undefined,
+                  booking.endsAt ?? undefined,
+                )}
+              </p>
+            )}
+
+            {booking.endsAt && (
+              <p className="text-sm text-slate-500">
+                ينتهي الإيجار:{' '}
+                {new Date(booking.endsAt).toLocaleDateString('ar-SA', {
+                  dateStyle: 'full',
+                })}
+              </p>
+            )}
+
+            {booking.property?.rental?.source && (
+              <Badge variant="outline">
+                {getRentalSourceLabel(booking.property.rental.source)}
+              </Badge>
+            )}
+
+            {booking.notes && (
+              <p className="text-sm text-slate-500">{booking.notes}</p>
+            )}
           </CardContent>
         </Card>
       ))}

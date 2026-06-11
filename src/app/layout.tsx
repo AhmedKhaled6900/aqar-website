@@ -29,11 +29,11 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="ar" dir="rtl" className={`${cairo.variable} h-full`}>
-      <body className="flex min-h-full flex-col antialiased">
+    <html lang="ar" dir="rtl" className={`${cairo.variable} ${cairo.className} h-full`}>
+      <body className="flex min-h-full flex-col font-sans antialiased">
         <AppProviders>
           <Header />
-          <main className="flex-1">{children}</main>
+          <main className="flex-1 animate-fade-in">{children}</main>
           <Footer />
         </AppProviders>
       </body>

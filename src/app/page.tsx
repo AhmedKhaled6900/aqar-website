@@ -36,7 +36,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <section className="bg-gradient-to-b from-emerald-50 to-white py-12 md:py-20">
+      <section className="animate-fade-in bg-gradient-to-b from-primary-light to-white py-12 md:py-20">
         <div className="container px-4 text-center">
           <h1 className="text-3xl font-bold text-slate-900 md:text-5xl">
             اعثر على عقارك المثالي
@@ -50,7 +50,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="container px-4 py-12">
+      <section className="container animate-slide-up px-4 py-12">
         <div className="mb-6 flex items-center justify-between">
           <h2 className="text-2xl font-bold text-slate-900">أحدث العقارات</h2>
           <Button asChild variant="outline">
@@ -101,7 +101,7 @@ export default async function HomePage() {
                 <Link
                   key={cat.id}
                   href={`/properties?parentCategoryId=${cat.id}`}
-                  className="rounded-xl border border-slate-200 bg-white p-4 text-center font-medium hover:border-emerald-300"
+                  className="card-interactive rounded-xl border border-slate-200 bg-white p-4 text-center font-medium hover:border-primary/30"
                 >
                   {cat.name}
                 </Link>
@@ -125,7 +125,7 @@ export default async function HomePage() {
               key={item.title}
               className="rounded-xl border border-slate-200 p-6 text-center"
             >
-              <h3 className="font-semibold text-emerald-700">{item.title}</h3>
+              <h3 className="font-semibold text-primary">{item.title}</h3>
               <p className="mt-2 text-sm text-slate-600">{item.desc}</p>
             </div>
           ))}

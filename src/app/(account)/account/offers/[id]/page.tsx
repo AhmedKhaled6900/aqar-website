@@ -17,6 +17,7 @@ import {
   isOfferTerminal,
 } from '@/utils/offers'
 import { OFFER_STATUS_LABELS } from '@/constants/offers'
+import { formatRentalPeriod } from '@/utils/rental'
 import { use } from 'react'
 
 interface PageProps {
@@ -63,12 +64,12 @@ export default function OfferDetailPage({ params }: PageProps) {
             <div>
               <Link
                 href={`/properties/${offer.propertyId}`}
-                className="text-lg font-semibold hover:text-emerald-700"
+                className="text-lg font-semibold hover:text-primary"
               >
                 {offer.property?.title ?? 'عقار'}
               </Link>
-              <p className="mt-2 text-2xl font-bold text-emerald-700">
-                {formatOfferPrice(offer.price, offer.pricePeriod)}
+              <p className="mt-2 text-2xl font-bold text-primary">
+                {formatOfferPrice(offer.price, offer.pricePeriod, offer.duration)}
               </p>
             </div>
             <OfferStatusBadge status={offer.status} />
@@ -102,7 +103,21 @@ export default function OfferDetailPage({ params }: PageProps) {
             </p>
           )}
 
-          {terminal && (
+          {offer.status === 'ACCEPTED' && offer.property?.rental && (
+            <div className="rounded-lg bg-primary-light p-3 text-sm text-primary">
+              <p className="font-medium">تم قبول عرضك وتأجير الوحدة</p>
+              <p className="mt-1">
+                {formatRentalPeriod(
+                  offer.property.rental.duration,
+                  offer.property.rental.pricePeriod,
+                  offer.property.rental.startedAt,
+                  offer.property.rental.endsAt,
+                )}
+              </p>
+            </div>
+          )}
+
+          {terminal && offer.status !== 'ACCEPTED' && (
             <p className="text-sm text-slate-600">
               {OFFER_STATUS_LABELS[offer.status]}
             </p>

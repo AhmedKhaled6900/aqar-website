@@ -32,7 +32,7 @@ export default function CommentsPage() {
           <CardContent className="p-4">
             <Link
               href={`/properties/${comment.propertyId}`}
-              className="text-sm font-medium hover:text-emerald-700"
+              className="text-sm font-medium hover:text-primary"
             >
               عقار
             </Link>
