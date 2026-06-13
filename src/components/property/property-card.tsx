@@ -6,6 +6,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { formatPrice } from '@/lib/utils'
 import type { Property } from '@/lib/types'
 import { cn } from '@/lib/utils'
+import { PropertyRentalStatusBadge } from '@/components/property/property-rental-status-badge'
 
 interface PropertyCardProps {
   property: Property
@@ -36,13 +37,16 @@ export function PropertyCard({ property, variant = 'grid' }: PropertyCardProps) 
           <Badge variant={property.purpose === 'SALE' ? 'sale' : 'rent'}>
             {property.purpose === 'SALE' ? 'بيع' : 'إيجار'}
           </Badge>
-          {property.status === 'RENTED' && (
-            <Badge variant="outline">مؤجرة</Badge>
+          {property.purpose === 'RENT' && (
+            <PropertyRentalStatusBadge property={property} size="sm" />
           )}
           {property.isNegotiable && property.status !== 'RENTED' && (
             <Badge variant="secondary">قابل للتفاوض</Badge>
           )}
         </div>
+        {property.status === 'RENTED' && (
+          <div className="absolute inset-0 bg-slate-900/10" aria-hidden />
+        )}
       </div>
       <CardContent
         className={cn('p-4', variant === 'list' && 'flex flex-1 flex-col justify-center')}
@@ -54,9 +58,12 @@ export function PropertyCard({ property, variant = 'grid' }: PropertyCardProps) 
           <MapPin className="h-3.5 w-3.5" />
           {property.city} — {property.area}
         </p>
-        <p className="mt-2 text-lg font-bold text-primary">
-          {formatPrice(property.price, property.purpose, property.pricePeriod)}
-        </p>
+        <div className="mt-2 flex flex-wrap items-center gap-2">
+          <p className="text-lg font-bold text-primary">
+            {formatPrice(property.price, property.purpose, property.pricePeriod)}
+          </p>
+          <PropertyRentalStatusBadge property={property} size="sm" />
+        </div>
         <div className="mt-3 flex items-center gap-4 text-sm text-slate-500">
           {property.bedrooms != null && (
             <span className="flex items-center gap-1">

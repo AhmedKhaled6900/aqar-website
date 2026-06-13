@@ -4,6 +4,7 @@ import { PropertyFilters } from '@/components/property/property-filters'
 import { PropertiesCatalog } from '@/components/property/properties-catalog'
 import { PropertyGridSkeleton } from '@/components/common/skeletons'
 import { fetchProperties } from '@/lib/api/server'
+import { parseAttributeFiltersFromSearchParams } from '@/lib/utils'
 import type { PropertyFilters as Filters } from '@/lib/types'
 
 export const metadata: Metadata = {
@@ -17,6 +18,7 @@ interface PageProps {
 
 export default async function PropertiesPage({ searchParams }: PageProps) {
   const params = await searchParams
+  const attributeFilters = parseAttributeFiltersFromSearchParams(params)
   const filters: Filters = {
     page: Number(params.page) || 1,
     limit: Number(params.limit) || 12,
@@ -37,6 +39,7 @@ export default async function PropertiesPage({ searchParams }: PageProps) {
         : undefined,
     subcategoryId:
       typeof params.subcategoryId === 'string' ? params.subcategoryId : undefined,
+    attributes: Object.keys(attributeFilters).length > 0 ? attributeFilters : undefined,
   }
 
   const data = await fetchProperties(filters).catch(() => ({

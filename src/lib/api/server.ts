@@ -1,6 +1,6 @@
 import { API_URL } from '@/lib/api/config'
 import { normalizePaginatedResponse } from '@/lib/api/pagination'
-import { buildQueryString } from '@/lib/utils'
+import { buildPropertiesQueryParams, buildQueryString } from '@/lib/utils'
 import type {
   PaginatedResponse,
   Property,
@@ -29,8 +29,12 @@ async function serverFetch<T>(path: string, init?: RequestInit): Promise<T> {
 export async function fetchProperties(
   filters: PropertyFilters = {},
 ): Promise<PaginatedResponse<Property>> {
+  const query = buildPropertiesQueryParams(filters)
+  const qs = new URLSearchParams(
+    Object.entries(query).map(([k, v]) => [k, String(v)]),
+  ).toString()
   const data = await serverFetch<PaginatedResponse<Property> | Property[]>(
-    `/properties${buildQueryString(filters as Record<string, string | number | undefined>)}`,
+    `/properties${qs ? `?${qs}` : ''}`,
   )
   return normalizePaginatedResponse<Property>(data)
 }

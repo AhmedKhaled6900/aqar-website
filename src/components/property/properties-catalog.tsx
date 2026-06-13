@@ -6,7 +6,7 @@ import { EmptyState } from '@/components/common/empty-state'
 import { Button } from '@/components/ui/button'
 import { useUiStore } from '@/store/ui-store'
 import type { PaginatedResponse, Property, PropertyFilters } from '@/lib/types'
-import { cn } from '@/lib/utils'
+import { cn, buildPropertiesPageQuery } from '@/lib/utils'
 import Link from 'next/link'
 
 interface PropertiesCatalogProps {
@@ -88,7 +88,7 @@ export function PropertiesCatalog({ initialData, filters }: PropertiesCatalogPro
               <Link
                 href={{
                   pathname: '/properties',
-                  query: { ...filters, page: meta.page - 1 },
+                  query: buildPropertiesPageQuery(filters, meta.page - 1),
                 }}
               >
                 السابق
@@ -103,7 +103,7 @@ export function PropertiesCatalog({ initialData, filters }: PropertiesCatalogPro
               <Link
                 href={{
                   pathname: '/properties',
-                  query: { ...filters, page: meta.page + 1 },
+                  query: buildPropertiesPageQuery(filters, meta.page + 1),
                 }}
               >
                 التالي

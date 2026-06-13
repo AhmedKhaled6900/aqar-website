@@ -6,6 +6,7 @@ import { PropertyCard } from '@/components/property/property-card'
 import { PropertyActions } from '@/components/property/property-actions'
 import { PropertyRentalInfo } from '@/components/property/property-rental-info'
 import { PropertyDetailEngagement } from '@/components/property/property-detail-engagement'
+import { PropertyAttributesDisplay } from '@/components/property/property-attributes-display'
 import { Badge } from '@/components/ui/badge'
 import {
   fetchProperty,
@@ -128,6 +129,8 @@ export default async function PropertyDetailPage({ params }: PageProps) {
               {property.description}
             </p>
           </div>
+
+          <PropertyAttributesDisplay attributes={property.attributes} />
 
           <div>
             <h2 className="mb-4 text-xl font-semibold">الموقع</h2>

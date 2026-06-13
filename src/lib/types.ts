@@ -90,6 +90,7 @@ export interface Property {
   images: PropertyImage[]
   videoUrl?: string | null
   owner?: { id: string; name: string }
+  attributes?: PropertyAttributesGroup
   createdAt?: string
   updatedAt?: string
 }
@@ -221,6 +222,51 @@ export interface Notification {
   data?: Record<string, unknown> | null
 }
 
+export type AttributeType =
+  | 'TEXT'
+  | 'NUMBER'
+  | 'BOOLEAN'
+  | 'SELECT'
+  | 'MULTI_SELECT'
+  | 'DATE'
+
+export interface PropertySystemAttribute {
+  id: string
+  attributeId: string
+  name: string
+  slug: string
+  type: AttributeType
+  value: unknown
+}
+
+export interface PropertyCustomAttribute {
+  id: string
+  name: string
+  type: AttributeType
+  value: unknown
+}
+
+export interface PropertyAttributesGroup {
+  system: PropertySystemAttribute[]
+  custom: PropertyCustomAttribute[]
+}
+
+export interface SubcategoryAttributeItem {
+  id: string
+  attributeId?: string
+  name: string
+  slug: string
+  type: AttributeType
+  options: string[] | null
+  isRequired: boolean
+  linkSortOrder: number
+}
+
+export interface SubcategoryAttributesResponse {
+  subcategoryId: string
+  items: SubcategoryAttributeItem[]
+}
+
 export interface BlogPost {
   id: string
   title: string
@@ -240,4 +286,5 @@ export interface PropertyFilters {
   subcategoryId?: string
   city?: string
   sort?: string
+  attributes?: Record<string, string>
 }

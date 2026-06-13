@@ -3,17 +3,19 @@
 import { useQuery } from '@tanstack/react-query'
 import { useAxiosInstance } from '@/hooks/useAxiosInstance'
 import { normalizePaginatedResponse } from '@/lib/api/pagination'
+import { buildPropertiesQueryParams } from '@/lib/utils'
 import type { PaginatedResponse, Property, PropertyFilters } from '@/lib/types'
 
 export function useProperties(filters: PropertyFilters = {}) {
   const axios = useAxiosInstance()
+  const params = buildPropertiesQueryParams(filters)
 
   return useQuery({
     queryKey: ['properties', filters],
     queryFn: async () => {
       const { data } = await axios.get<PaginatedResponse<Property> | Property[]>(
         '/properties',
-        { params: filters },
+        { params },
       )
       return data
     },
