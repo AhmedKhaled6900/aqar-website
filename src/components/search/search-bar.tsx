@@ -13,6 +13,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { useCategorySelectMenu } from '@/features/categories/useCategories'
+import { SALE_ENABLED, DEFAULT_PROPERTY_PURPOSE } from '@/constants/features'
 import { POPULAR_CITIES } from '@/constants/cities'
 import type { PropertyPurpose, PricePeriod } from '@/lib/types'
 
@@ -31,7 +32,7 @@ export function SearchBar({ compact, defaultValues }: SearchBarProps) {
   const { data: categories = [] } = useCategorySelectMenu()
   const [city, setCity] = useState(defaultValues?.city ?? '')
   const [purpose, setPurpose] = useState<PropertyPurpose | ''>(
-    defaultValues?.purpose ?? '',
+    defaultValues?.purpose ?? (SALE_ENABLED ? '' : DEFAULT_PROPERTY_PURPOSE),
   )
   const [parentCategoryId, setParentCategoryId] = useState(
     defaultValues?.parentCategoryId ?? '',
@@ -43,9 +44,10 @@ export function SearchBar({ compact, defaultValues }: SearchBarProps) {
   function handleSearch() {
     const params = new URLSearchParams()
     if (city) params.set('city', city)
-    if (purpose) params.set('purpose', purpose)
+    const searchPurpose = SALE_ENABLED ? purpose : DEFAULT_PROPERTY_PURPOSE
+    if (searchPurpose) params.set('purpose', searchPurpose)
     if (parentCategoryId) params.set('parentCategoryId', parentCategoryId)
-    if (pricePeriod && purpose === 'RENT') params.set('pricePeriod', pricePeriod)
+    if (pricePeriod && searchPurpose === 'RENT') params.set('pricePeriod', pricePeriod)
     router.push(`/properties?${params.toString()}`)
   }
 
@@ -57,7 +59,13 @@ export function SearchBar({ compact, defaultValues }: SearchBarProps) {
           : 'animate-slide-up flex flex-col gap-3 rounded-2xl border border-slate-200/80 bg-white p-4 shadow-soft-lg sm:flex-row sm:items-end sm:p-5'
       }
     >
-      <div className="grid min-w-0 flex-1 grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div
+        className={
+          compact
+            ? 'grid min-w-0 flex-1 grid-cols-1 gap-3 sm:grid-cols-2'
+            : 'grid min-w-0 flex-1 grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3'
+        }
+      >
         <Select value={city} onValueChange={setCity}>
           <SelectTrigger className="overflow-hidden whitespace-nowrap">
             <SelectValue placeholder="المدينة" className="truncate" />
@@ -71,18 +79,20 @@ export function SearchBar({ compact, defaultValues }: SearchBarProps) {
           </SelectContent>
         </Select>
 
-        <Select
-          value={purpose}
-          onValueChange={(v) => setPurpose(v as PropertyPurpose)}
-        >
-          <SelectTrigger className="overflow-hidden whitespace-nowrap">
-            <SelectValue placeholder="حالة العقار" className="truncate" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="SALE">بيع</SelectItem>
-            <SelectItem value="RENT">إيجار</SelectItem>
-          </SelectContent>
-        </Select>
+        {SALE_ENABLED && (
+          <Select
+            value={purpose}
+            onValueChange={(v) => setPurpose(v as PropertyPurpose)}
+          >
+            <SelectTrigger className="overflow-hidden whitespace-nowrap">
+              <SelectValue placeholder="حالة العقار" className="truncate" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="SALE">بيع</SelectItem>
+              <SelectItem value="RENT">إيجار</SelectItem>
+            </SelectContent>
+          </Select>
+        )}
 
         <Select value={parentCategoryId} onValueChange={setParentCategoryId}>
           <SelectTrigger className="overflow-hidden whitespace-nowrap">
@@ -97,7 +107,7 @@ export function SearchBar({ compact, defaultValues }: SearchBarProps) {
           </SelectContent>
         </Select>
 
-        {purpose === 'RENT' && (
+        {(SALE_ENABLED ? purpose === 'RENT' : true) && (
           <Select
             value={pricePeriod}
             onValueChange={(v) => setPricePeriod(v as PricePeriod)}

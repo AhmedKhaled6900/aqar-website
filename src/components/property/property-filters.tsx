@@ -19,6 +19,10 @@ import {
 } from '@/features/categories/useCategories'
 import { useSubcategoryAttributes } from '@/features/attributes/useAttributes'
 import { POPULAR_CITIES } from '@/constants/cities'
+import {
+  DEFAULT_PROPERTY_PURPOSE,
+  SALE_ENABLED,
+} from '@/constants/features'
 import { parseAttributeFiltersFromSearchParams } from '@/lib/utils'
 import type { PricePeriod, PropertyPurpose } from '@/lib/types'
 
@@ -32,9 +36,11 @@ export function PropertyFilters() {
   )
 
   const [city, setCity] = useState(searchParams.get('city') ?? '')
-  const [purpose, setPurpose] = useState<PropertyPurpose | ''>(
-    (searchParams.get('purpose') as PropertyPurpose) ?? '',
-  )
+  const [purpose, setPurpose] = useState<PropertyPurpose | ''>(() => {
+    const fromUrl = searchParams.get('purpose') as PropertyPurpose | null
+    if (!SALE_ENABLED) return DEFAULT_PROPERTY_PURPOSE
+    return fromUrl === 'SALE' || fromUrl === 'RENT' ? fromUrl : ''
+  })
   const [parentCategoryId, setParentCategoryId] = useState(
     searchParams.get('parentCategoryId') ?? '',
   )
@@ -64,10 +70,11 @@ export function PropertyFilters() {
   const applyFilters = useCallback(() => {
     const params = new URLSearchParams()
     if (city) params.set('city', city)
-    if (purpose) params.set('purpose', purpose)
+    const activePurpose = SALE_ENABLED ? purpose : DEFAULT_PROPERTY_PURPOSE
+    if (activePurpose) params.set('purpose', activePurpose)
     if (parentCategoryId) params.set('parentCategoryId', parentCategoryId)
     if (subcategoryId) params.set('subcategoryId', subcategoryId)
-    if (pricePeriod && purpose === 'RENT') params.set('pricePeriod', pricePeriod)
+    if (pricePeriod && activePurpose === 'RENT') params.set('pricePeriod', pricePeriod)
     Object.entries(attributeFilters).forEach(([slug, value]) => {
       if (value) params.set(`attributes[${slug}]`, value)
     })
@@ -77,12 +84,12 @@ export function PropertyFilters() {
 
   const clearFilters = () => {
     setCity('')
-    setPurpose('')
+    setPurpose(SALE_ENABLED ? '' : DEFAULT_PROPERTY_PURPOSE)
     setParentCategoryId('')
     setSubcategoryId('')
     setPricePeriod('')
     setAttributeFilters({})
-    router.push('/properties')
+    router.push(SALE_ENABLED ? '/properties' : '/properties?purpose=RENT')
   }
 
   const attributeItems = subcategoryAttributes?.items ?? []
@@ -113,25 +120,27 @@ export function PropertyFilters() {
           </div>
         </AccordionItem>
 
-        <AccordionItem value="type" title="نوع العرض">
+        <AccordionItem value="type" title={SALE_ENABLED ? 'نوع العرض' : 'فترة الإيجار'}>
           <div className="space-y-4">
-            <div className="space-y-2">
-              <Label>الغرض</Label>
-              <Select
-                value={purpose}
-                onValueChange={(v) => setPurpose(v as PropertyPurpose)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="بيع / إيجار" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="SALE">بيع</SelectItem>
-                  <SelectItem value="RENT">إيجار</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            {SALE_ENABLED && (
+              <div className="space-y-2">
+                <Label>الغرض</Label>
+                <Select
+                  value={purpose}
+                  onValueChange={(v) => setPurpose(v as PropertyPurpose)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="بيع / إيجار" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="SALE">بيع</SelectItem>
+                    <SelectItem value="RENT">إيجار</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
 
-            {purpose === 'RENT' && (
+            {(SALE_ENABLED ? purpose === 'RENT' : true) && (
               <div className="space-y-2">
                 <Label>فترة السعر</Label>
                 <Select

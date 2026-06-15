@@ -4,6 +4,7 @@ import { Bed, Bath, Maximize, MapPin } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { formatPrice } from '@/lib/utils'
+import { SALE_ENABLED } from '@/constants/features'
 import type { Property } from '@/lib/types'
 import { cn } from '@/lib/utils'
 import { PropertyRentalStatusBadge } from '@/components/property/property-rental-status-badge'
@@ -34,9 +35,13 @@ export function PropertyCard({ property, variant = 'grid' }: PropertyCardProps) 
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
         />
         <div className="absolute top-3 right-3 flex flex-wrap justify-end gap-2">
-          <Badge variant={property.purpose === 'SALE' ? 'sale' : 'rent'}>
-            {property.purpose === 'SALE' ? 'بيع' : 'إيجار'}
-          </Badge>
+          {SALE_ENABLED ? (
+            <Badge variant={property.purpose === 'SALE' ? 'sale' : 'rent'}>
+              {property.purpose === 'SALE' ? 'بيع' : 'إيجار'}
+            </Badge>
+          ) : (
+            <Badge variant="rent">إيجار</Badge>
+          )}
           {property.purpose === 'RENT' && (
             <PropertyRentalStatusBadge property={property} size="sm" />
           )}

@@ -3,11 +3,12 @@ import { HeroSection } from '@/components/home/hero-section'
 import { PropertyCard } from '@/components/property/property-card'
 import { Button } from '@/components/ui/button'
 import { fetchProperties, fetchCategorySelectMenu } from '@/lib/api/server'
+import { DEFAULT_PROPERTY_PURPOSE } from '@/constants/features'
 import { POPULAR_CITIES } from '@/constants/cities'
 
 export default async function HomePage() {
   const [latest, featured, categoriesData] = await Promise.all([
-    fetchProperties({ page: 1, limit: 6 }).catch(() => ({
+    fetchProperties({ page: 1, limit: 6, purpose: DEFAULT_PROPERTY_PURPOSE }).catch(() => ({
       items: [],
       meta: {
         total: 0,
@@ -18,7 +19,7 @@ export default async function HomePage() {
         hasPreviousPage: false,
       },
     })),
-    fetchProperties({ page: 1, limit: 4 }).catch(() => ({
+    fetchProperties({ page: 1, limit: 4, purpose: DEFAULT_PROPERTY_PURPOSE }).catch(() => ({
       items: [],
       meta: {
         total: 0,
@@ -72,7 +73,7 @@ export default async function HomePage() {
           {POPULAR_CITIES.map((city) => (
             <Link
               key={city}
-              href={`/properties?city=${encodeURIComponent(city)}`}
+              href={`/properties?city=${encodeURIComponent(city)}&purpose=RENT`}
               className="rounded-xl border border-slate-200 bg-white p-4 text-center text-sm font-medium transition-shadow hover:shadow-md"
             >
               {city}
@@ -91,7 +92,7 @@ export default async function HomePage() {
               {categories.map((cat) => (
                 <Link
                   key={cat.id}
-                  href={`/properties?parentCategoryId=${cat.id}`}
+                  href={`/properties?parentCategoryId=${cat.id}&purpose=RENT`}
                   className="card-interactive rounded-xl border border-slate-200 bg-white p-4 text-center font-medium hover:border-primary/30"
                 >
                   {cat.name}

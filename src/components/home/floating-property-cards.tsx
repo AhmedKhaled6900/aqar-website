@@ -29,8 +29,9 @@ const FALLBACK_PROPERTIES: Property[] = [
     id: 'demo-2',
     title: 'فيلا عائلية — حي الشاطئ',
     description: '',
-    price: 1200000,
-    purpose: 'SALE',
+    price: 12000,
+    purpose: 'RENT',
+    pricePeriod: 'MONTH',
     city: 'جدة',
     area: 'الشاطئ',
     address: 'جدة',
@@ -39,10 +40,10 @@ const FALLBACK_PROPERTIES: Property[] = [
     images: [{ id: '2', imageUrl: '/placeholder-property.svg', isPrimary: true, order: 0 }],
   },
   {
-    id: 'demo-3',
-    title: 'مكتب تجاري — الخبر',
+    id: 'demo-2b',
+    title: 'استوديو — حي العليا',
     description: '',
-    price: 8500,
+    price: 3200,
     pricePeriod: 'MONTH',
     purpose: 'RENT',
     city: 'الخبر',
@@ -92,8 +93,8 @@ function FloatingMiniCard({
           sizes="240px"
         />
         <div className="absolute top-2 right-2 flex flex-wrap gap-1">
-          <Badge variant={property.purpose === 'SALE' ? 'sale' : 'rent'} className="text-[10px]">
-            {property.purpose === 'SALE' ? 'بيع' : 'إيجار'}
+          <Badge variant="rent" className="text-[10px]">
+            إيجار
           </Badge>
           <PropertyRentalStatusBadge property={property} size="sm" />
         </div>

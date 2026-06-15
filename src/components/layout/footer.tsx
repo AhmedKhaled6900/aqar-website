@@ -16,7 +16,7 @@ export function Footer() {
           <div>
             <h3 className="text-lg font-bold text-primary">عقار</h3>
             <p className="mt-2 text-sm text-slate-600">
-              منصة عقارية سعودية للبحث عن العقارات للبيع والإيجار بثقة وأمان.
+              منصة عقارية سعودية للبحث عن العقارات للإيجار بثقة وأمان.
             </p>
           </div>
           <div>

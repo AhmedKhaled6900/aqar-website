@@ -8,7 +8,7 @@ import type { Property } from '@/lib/types'
 
 const TRUST_ITEMS = [
   'عقارات معتمدة',
-  'إيجار وبيع',
+  'إيجار مباشر',
   'تفاوض على السعر',
   'حجز مباشر',
   'دعم بالعربي',
@@ -46,11 +46,11 @@ export function HeroSection({ properties, totalAvailable }: HeroSectionProps) {
           {/* Content — RTL start (right) */}
           <div className="animate-slide-up text-center lg:text-right">
             <Badge className="mb-4 border-primary/20 bg-white/80 text-primary shadow-soft">
-              🇸🇦 منصة إيجار وبيع — المملكة العربية السعودية
+              🇸🇦 منصة إيجار عقارات — المملكة العربية السعودية
             </Badge>
 
             <h1 className="text-3xl font-bold leading-tight text-slate-900 md:text-5xl md:leading-tight lg:text-[3.25rem]">
-              أجر أو ابحث عن{' '}
+              أجر{' '}
               <span className="bg-gradient-to-l from-primary to-primary/80 bg-clip-text text-transparent">
                 عقارك
               </span>

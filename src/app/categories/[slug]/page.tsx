@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { fetchCategorySelectMenu } from '@/lib/api/server'
+import { DEFAULT_PROPERTY_PURPOSE } from '@/constants/features'
 
 interface PageProps {
   params: Promise<{ slug: string }>
@@ -17,8 +18,8 @@ export default async function CategoryPage({ params }: PageProps) {
   const category = data.items.find((c) => c.slug === slug)
 
   if (category) {
-    redirect(`/properties?parentCategoryId=${category.id}`)
+    redirect(`/properties?parentCategoryId=${category.id}&purpose=${DEFAULT_PROPERTY_PURPOSE}`)
   }
 
-  redirect('/properties')
+  redirect(`/properties?purpose=${DEFAULT_PROPERTY_PURPOSE}`)
 }

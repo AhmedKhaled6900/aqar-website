@@ -4,12 +4,13 @@ import { PropertyFilters } from '@/components/property/property-filters'
 import { PropertiesCatalog } from '@/components/property/properties-catalog'
 import { PropertyGridSkeleton } from '@/components/common/skeletons'
 import { fetchProperties } from '@/lib/api/server'
+import { resolvePropertyPurposeFilter } from '@/constants/features'
 import { parseAttributeFiltersFromSearchParams } from '@/lib/utils'
 import type { PropertyFilters as Filters } from '@/lib/types'
 
 export const metadata: Metadata = {
   title: 'العقارات',
-  description: 'تصفح العقارات المعتمدة للبيع والإيجار في السعودية',
+  description: 'تصفح العقارات المعتمدة للإيجار في السعودية',
 }
 
 interface PageProps {
@@ -23,10 +24,9 @@ export default async function PropertiesPage({ searchParams }: PageProps) {
     page: Number(params.page) || 1,
     limit: Number(params.limit) || 12,
     city: typeof params.city === 'string' ? params.city : undefined,
-    purpose:
-      params.purpose === 'SALE' || params.purpose === 'RENT'
-        ? params.purpose
-        : undefined,
+    purpose: resolvePropertyPurposeFilter(
+      typeof params.purpose === 'string' ? params.purpose : undefined,
+    ),
     pricePeriod:
       params.pricePeriod === 'DAY' ||
       params.pricePeriod === 'MONTH' ||

@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     template: '%s | عقار',
   },
   description:
-    'ابحث عن عقارات للبيع والإيجار في السعودية. شقق، فلل، أراضي وأكثر.',
+    'ابحث عن عقارات للإيجار في السعودية. شقق، فلل، مكاتب وأكثر.',
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000',
   ),

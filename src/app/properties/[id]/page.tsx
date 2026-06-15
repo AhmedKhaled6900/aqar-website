@@ -15,6 +15,7 @@ import {
   fetchPropertyComments,
 } from '@/lib/api/server'
 import { formatPrice } from '@/lib/utils'
+import { isPropertyPurposeVisible } from '@/constants/features'
 import { Bed, Bath, Maximize, MapPin } from 'lucide-react'
 
 interface PageProps {
@@ -50,6 +51,10 @@ export default async function PropertyDetailPage({ params }: PageProps) {
     notFound()
   }
 
+  if (!isPropertyPurposeVisible(property.purpose)) {
+    notFound()
+  }
+
   const emptyMeta = {
     total: 0,
     page: 1,
@@ -64,6 +69,10 @@ export default async function PropertyDetailPage({ params }: PageProps) {
     fetchPropertyReviews(id).catch(() => ({ items: [], meta: emptyMeta })),
     fetchPropertyComments(id).catch(() => ({ items: [], meta: { ...emptyMeta, limit: 20 } })),
   ])
+
+  const visibleSimilar = similar.items.filter((p) =>
+    isPropertyPurposeVisible(p.purpose),
+  )
 
   return (
     <div className="container px-4 py-8">
@@ -87,9 +96,7 @@ export default async function PropertyDetailPage({ params }: PageProps) {
 
           <div>
             <div className="flex flex-wrap gap-2">
-              <Badge variant={property.purpose === 'SALE' ? 'sale' : 'rent'}>
-                {property.purpose === 'SALE' ? 'بيع' : 'إيجار'}
-              </Badge>
+              <Badge variant="rent">إيجار</Badge>
               <Badge variant="secondary">{property.category?.name}</Badge>
               {property.status === 'RENTED' && (
                 <Badge variant="outline">مؤجرة</Badge>
@@ -174,11 +181,11 @@ export default async function PropertyDetailPage({ params }: PageProps) {
         </aside>
       </div>
 
-      {similar.items.length > 0 && (
+      {visibleSimilar.length > 0 && (
         <section className="mt-12">
           <h2 className="mb-6 text-2xl font-bold text-slate-900">عقارات مشابهة</h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {similar.items.map((p) => (
+            {visibleSimilar.map((p) => (
               <PropertyCard key={p.id} property={p} />
             ))}
           </div>
