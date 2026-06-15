@@ -57,6 +57,45 @@
   }
 }
 
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-14px);
+  }
+}
+
+@keyframes float-slow {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-1deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(1deg);
+  }
+}
+
+@keyframes float-delayed {
+  0%,
+  100% {
+    transform: translateY(0) rotate(1deg);
+  }
+  50% {
+    transform: translateY(-12px) rotate(-1deg);
+  }
+}
+
+@keyframes trust-marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-25%);
+  }
+}
+
 html {
   font-family: var(--font-cairo), "Cairo", system-ui, sans-serif;
 }
@@ -97,6 +136,42 @@ body {
 
 .animate-scale-in {
   animation: scale-in 0.35s ease-out both;
+}
+
+.animate-float {
+  animation: float 5s ease-in-out infinite;
+}
+
+.animate-float-slow {
+  animation: float-slow 6s ease-in-out infinite;
+}
+
+.animate-float-delayed {
+  animation: float-delayed 5.5s ease-in-out infinite;
+}
+
+.hero-grid-pattern {
+  background-image: radial-gradient(circle at 1px 1px, rgba(216, 62, 28, 0.08) 1px, transparent 0);
+  background-size: 28px 28px;
+}
+
+.hero-trust-marquee {
+  direction: ltr;
+}
+
+.hero-trust-track {
+  width: max-content;
+  animation: trust-marquee 28s linear infinite;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-float,
+  .animate-float-slow,
+  .animate-float-delayed,
+  .hero-trust-track {
+    animation: none;
+  }
 }
 
 /* بطاقات تفاعلية */

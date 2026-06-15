@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { SearchBar } from '@/components/search/search-bar'
+import { HeroSection } from '@/components/home/hero-section'
 import { PropertyCard } from '@/components/property/property-card'
 import { Button } from '@/components/ui/button'
 import { fetchProperties, fetchCategorySelectMenu } from '@/lib/api/server'
@@ -36,19 +36,10 @@ export default async function HomePage() {
 
   return (
     <>
-      <section className="animate-fade-in bg-gradient-to-b from-primary-light to-white py-12 md:py-20">
-        <div className="container px-4 text-center">
-          <h1 className="text-3xl font-bold text-slate-900 md:text-5xl">
-            اعثر على عقارك المثالي
-          </h1>
-          <p className="mx-auto mt-4 max-w-2xl text-slate-600 md:text-lg">
-            منصة عقارية سعودية — بيع وإيجار بثقة
-          </p>
-          <div className="mx-auto mt-8 max-w-4xl">
-            <SearchBar />
-          </div>
-        </div>
-      </section>
+      <HeroSection
+        properties={featured.items.length > 0 ? featured.items : latest.items}
+        totalAvailable={latest.meta.total > 0 ? latest.meta.total : undefined}
+      />
 
       <section className="container animate-slide-up px-4 py-12">
         <div className="mb-6 flex items-center justify-between">

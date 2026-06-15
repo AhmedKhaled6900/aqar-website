@@ -53,14 +53,14 @@ export function SearchBar({ compact, defaultValues }: SearchBarProps) {
     <div
       className={
         compact
-          ? 'flex flex-col gap-3 sm:flex-row'
-          : 'animate-slide-up rounded-2xl border border-slate-200/80 bg-white p-4 shadow-soft-lg sm:p-6'
+          ? 'flex flex-col gap-3 sm:flex-row sm:items-end'
+          : 'animate-slide-up flex flex-col gap-3 rounded-2xl border border-slate-200/80 bg-white p-4 shadow-soft-lg sm:flex-row sm:items-end sm:p-5'
       }
     >
-      <div className="grid flex-1 grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid min-w-0 flex-1 grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <Select value={city} onValueChange={setCity}>
-          <SelectTrigger>
-            <SelectValue placeholder="المدينة" />
+          <SelectTrigger className="overflow-hidden whitespace-nowrap">
+            <SelectValue placeholder="المدينة" className="truncate" />
           </SelectTrigger>
           <SelectContent>
             {POPULAR_CITIES.map((c) => (
@@ -75,8 +75,8 @@ export function SearchBar({ compact, defaultValues }: SearchBarProps) {
           value={purpose}
           onValueChange={(v) => setPurpose(v as PropertyPurpose)}
         >
-          <SelectTrigger>
-            <SelectValue placeholder="بيع / إيجار" />
+          <SelectTrigger className="overflow-hidden whitespace-nowrap">
+            <SelectValue placeholder="حالة العقار" className="truncate" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="SALE">بيع</SelectItem>
@@ -85,8 +85,8 @@ export function SearchBar({ compact, defaultValues }: SearchBarProps) {
         </Select>
 
         <Select value={parentCategoryId} onValueChange={setParentCategoryId}>
-          <SelectTrigger>
-            <SelectValue placeholder="التصنيف" />
+          <SelectTrigger className="overflow-hidden whitespace-nowrap">
+            <SelectValue placeholder="التصنيف" className="truncate" />
           </SelectTrigger>
           <SelectContent>
             {categories.map((cat) => (
@@ -102,8 +102,8 @@ export function SearchBar({ compact, defaultValues }: SearchBarProps) {
             value={pricePeriod}
             onValueChange={(v) => setPricePeriod(v as PricePeriod)}
           >
-            <SelectTrigger>
-              <SelectValue placeholder="فترة السعر" />
+            <SelectTrigger className="overflow-hidden whitespace-nowrap">
+              <SelectValue placeholder="فترة السعر" className="truncate" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="DAY">يومي</SelectItem>
@@ -114,7 +114,10 @@ export function SearchBar({ compact, defaultValues }: SearchBarProps) {
         )}
       </div>
 
-      <Button onClick={handleSearch} className="shrink-0 gap-2">
+      <Button
+        onClick={handleSearch}
+        className="h-10 w-full shrink-0 gap-2 sm:w-auto"
+      >
         <Search className="h-4 w-4" />
         بحث
       </Button>
