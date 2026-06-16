@@ -1,4 +1,6 @@
 import Link from 'next/link'
+import { BrandLogo } from '@/components/layout/brand-logo'
+import { APP_NAME } from '@/constants/branding'
 
 const links = [
   { href: '/about', label: 'من نحن' },
@@ -14,7 +16,7 @@ export function Footer() {
       <div className="container mx-auto px-4 py-12">
         <div className="grid gap-8 md:grid-cols-3">
           <div>
-            <h3 className="text-lg font-bold text-primary">عقار</h3>
+            <BrandLogo asLink={false} className="items-start" />
             <p className="mt-2 text-sm text-slate-600">
               منصة عقارية سعودية للبحث عن العقارات للإيجار بثقة وأمان.
             </p>
@@ -42,7 +44,7 @@ export function Footer() {
           </div>
         </div>
         <div className="mt-8 border-t border-slate-200 pt-6 text-center text-sm text-slate-500">
-          © {new Date().getFullYear()} عقار. جميع الحقوق محفوظة.
+          © {new Date().getFullYear()} {APP_NAME}. جميع الحقوق محفوظة.
         </div>
       </div>
     </footer>

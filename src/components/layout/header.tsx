@@ -9,6 +9,7 @@ import { useAuthStore } from '@/store/auth-store'
 import { getDashboardUrlForRole } from '@/lib/auth/redirect'
 import { clearAuthStorage } from '@/lib/auth/tokens'
 import { useQueryClient } from '@tanstack/react-query'
+import { BrandLogo } from '@/components/layout/brand-logo'
 import { cn } from '@/lib/utils'
 
 const navLinks = [
@@ -36,9 +37,7 @@ export function Header() {
   return (
     <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/95 shadow-header backdrop-blur">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
-        <Link href="/" className="text-xl font-bold text-primary transition-colors hover:text-primary-dark">
-          عقار
-        </Link>
+        <BrandLogo />
 
         <nav className="hidden items-center gap-6 md:flex">
           {navLinks.map((link) => (

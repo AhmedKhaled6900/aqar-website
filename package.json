@@ -1,7 +1,7 @@
 {
   "name": "aqar-website",
   "version": "1.0.0",
-  "description": "Customer-facing Saudi real estate platform (RTL Arabic)",
+  "description": "وجهتك العقارية — Customer-facing Saudi real estate platform (RTL Arabic)",
   "private": true,
   "scripts": {
     "dev": "next dev",

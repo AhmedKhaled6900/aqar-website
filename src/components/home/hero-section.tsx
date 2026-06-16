@@ -1,10 +1,11 @@
 import Link from 'next/link'
 import { SearchBar } from '@/components/search/search-bar'
 import { FloatingPropertyCards } from '@/components/home/floating-property-cards'
-import { Badge } from '@/components/ui/badge'
+import { APP_NAME } from '@/constants/branding'
 import { Button } from '@/components/ui/button'
 import { POPULAR_CITIES } from '@/constants/cities'
 import type { Property } from '@/lib/types'
+import { Badge } from '../ui/badge'
 
 const TRUST_ITEMS = [
   'عقارات معتمدة',
@@ -46,7 +47,7 @@ export function HeroSection({ properties, totalAvailable }: HeroSectionProps) {
           {/* Content — RTL start (right) */}
           <div className="animate-slide-up text-center lg:text-right">
             <Badge className="mb-4 border-primary/20 bg-white/80 text-primary shadow-soft">
-              🇸🇦 منصة إيجار عقارات — المملكة العربية السعودية
+              🇸🇦 {APP_NAME} — المملكة العربية السعودية
             </Badge>
 
             <h1 className="text-3xl font-bold leading-tight text-slate-900 md:text-5xl md:leading-tight lg:text-[3.25rem]">

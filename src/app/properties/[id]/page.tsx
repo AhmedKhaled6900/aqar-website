@@ -15,6 +15,7 @@ import {
   fetchPropertyComments,
 } from '@/lib/api/server'
 import { formatPrice } from '@/lib/utils'
+import { APP_NAME } from '@/constants/branding'
 import { isPropertyPurposeVisible } from '@/constants/features'
 import { Bed, Bath, Maximize, MapPin } from 'lucide-react'
 
@@ -37,7 +38,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       },
     }
   } catch {
-    return { title: 'عقار' }
+    return { title: APP_NAME }
   }
 }
 

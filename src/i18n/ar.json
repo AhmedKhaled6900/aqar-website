@@ -1,6 +1,8 @@
 {
   "common": {
-    "appName": "عقار",
+    "appName": "وجهتك",
+    "appNameSecondary": "العقارية",
+    "appNameFull": "وجهتك العقارية",
     "search": "بحث",
     "login": "تسجيل الدخول",
     "register": "إنشاء حساب",

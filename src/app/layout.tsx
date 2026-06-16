@@ -3,6 +3,7 @@ import { Cairo } from 'next/font/google'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
 import { AppProviders } from '@/providers/app-providers'
+import { APP_DESCRIPTION, APP_NAME, APP_TAGLINE } from '@/constants/branding'
 import './globals.css'
 
 const cairo = Cairo({
@@ -13,11 +14,10 @@ const cairo = Cairo({
 
 export const metadata: Metadata = {
   title: {
-    default: 'عقار — منصة العقارات السعودية',
-    template: '%s | عقار',
+    default: `${APP_NAME} — ${APP_TAGLINE}`,
+    template: `%s | ${APP_NAME}`,
   },
-  description:
-    'ابحث عن عقارات للإيجار في السعودية. شقق، فلل، مكاتب وأكثر.',
+  description: APP_DESCRIPTION,
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000',
   ),
