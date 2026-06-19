@@ -1,12 +1,15 @@
 import { API_URL } from '@/lib/api/config'
 import { normalizePaginatedResponse } from '@/lib/api/pagination'
-import { buildPropertiesQueryParams, buildQueryString } from '@/lib/utils'
+import { buildPropertiesQueryParams, buildQueryString, buildServicesQueryParams } from '@/lib/utils'
 import type {
   PaginatedResponse,
   Property,
   PropertyFilters,
+  PublicServiceProvider,
   Review,
   Comment,
+  ServiceCategory,
+  ServiceProviderFilters,
 } from '@/lib/types'
 
 async function serverFetch<T>(path: string, init?: RequestInit): Promise<T> {
@@ -80,4 +83,27 @@ export async function fetchCategorySelectMenu() {
   return serverFetch<{ items: import('@/lib/types').CategorySelectMenuItem[] }>(
     '/categories/select-menu',
   )
+}
+
+export async function fetchServiceCategories(): Promise<{ items: ServiceCategory[] }> {
+  return serverFetch<{ items: ServiceCategory[] }>('/services/categories')
+}
+
+export async function fetchPublicProviders(
+  filters: ServiceProviderFilters = {},
+): Promise<PaginatedResponse<PublicServiceProvider>> {
+  const query = buildServicesQueryParams(filters)
+  const qs = new URLSearchParams(
+    Object.entries(query).map(([k, v]) => [k, String(v)]),
+  ).toString()
+  const data = await serverFetch<
+    PaginatedResponse<PublicServiceProvider> | PublicServiceProvider[]
+  >(`/services/providers${qs ? `?${qs}` : ''}`)
+  return normalizePaginatedResponse<PublicServiceProvider>(data)
+}
+
+export async function fetchPublicProviderDetail(
+  id: string,
+): Promise<PublicServiceProvider> {
+  return serverFetch<PublicServiceProvider>(`/services/providers/${id}`)
 }

@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { HeroSection } from '@/components/home/hero-section'
+import { HomeServicesSections } from '@/components/home/home-services-sections'
 import { PropertyCard } from '@/components/property/property-card'
 import { Button } from '@/components/ui/button'
 import { fetchProperties, fetchCategorySelectMenu } from '@/lib/api/server'
@@ -41,6 +42,8 @@ export default async function HomePage() {
         properties={featured.items.length > 0 ? featured.items : latest.items}
         totalAvailable={latest.meta.total > 0 ? latest.meta.total : undefined}
       />
+
+      <HomeServicesSections />
 
       <section className="container animate-slide-up px-4 py-12">
         <div className="mb-6 flex items-center justify-between">

@@ -1,6 +1,7 @@
 export const PUBLIC_ROUTES = [
   '/',
   '/properties',
+  '/services',
   '/categories',
   '/auth',
   '/blog',

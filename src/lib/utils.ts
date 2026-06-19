@@ -107,3 +107,27 @@ export function parseAttributeFiltersFromSearchParams(
 
   return attributes
 }
+
+export function buildServicesQueryParams(
+  filters: import('@/lib/types').ServiceProviderFilters,
+): Record<string, string | number> {
+  const params: Record<string, string | number> = {}
+  if (filters.page) params.page = filters.page
+  if (filters.limit) params.limit = filters.limit
+  if (filters.city) params.city = filters.city
+  if (filters.area) params.area = filters.area
+  if (filters.category) params.category = filters.category
+  return params
+}
+
+export function buildServicesPageQuery(
+  filters: import('@/lib/types').ServiceProviderFilters,
+  page: number,
+): Record<string, string> {
+  const query: Record<string, string> = { page: String(page) }
+  if (filters.limit) query.limit = String(filters.limit)
+  if (filters.city) query.city = filters.city
+  if (filters.area) query.area = filters.area
+  if (filters.category) query.category = filters.category
+  return query
+}

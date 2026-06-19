@@ -15,6 +15,7 @@ import { cn } from '@/lib/utils'
 const navLinks = [
   { href: '/', label: 'الرئيسية' },
   { href: '/properties', label: 'العقارات' },
+  { href: '/services', label: 'الخدمات' },
   { href: '/blog', label: 'المدونة' },
   { href: '/about', label: 'من نحن' },
   { href: '/contact', label: 'اتصل بنا' },

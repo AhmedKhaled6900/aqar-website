@@ -7,14 +7,15 @@ import { getAccessToken } from '@/lib/auth/tokens'
 import type { Booking, CreateBookingInput, PaginatedResponse } from '@/lib/types'
 import type { BookingInput } from '@/schemas/property'
 
-export function useMyBookings() {
+export function useMyBookings(page = 1, limit = 10) {
   const axios = useAxiosInstance()
 
   return useQuery({
-    queryKey: ['bookings', 'my'],
+    queryKey: ['bookings', 'my', page, limit],
     queryFn: async () => {
       const { data } = await axios.get<PaginatedResponse<Booking> | Booking[]>(
         '/bookings/my',
+        { params: { page, limit } },
       )
       return data
     },

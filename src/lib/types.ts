@@ -288,3 +288,63 @@ export interface PropertyFilters {
   sort?: string
   attributes?: Record<string, string>
 }
+
+export type ServiceListingStatus = 'DRAFT' | 'ACTIVE' | 'INACTIVE'
+
+export interface ServiceCategory {
+  id: string
+  name: string
+  slug: string
+  description?: string | null
+  sortOrder?: number
+}
+
+export interface ServiceCoverageArea {
+  city: string
+  area: string
+  isActive: boolean
+}
+
+export interface ServiceMenuItem {
+  id?: string
+  name: string
+  price: number
+  description?: string | null
+}
+
+export interface ServiceListing {
+  id: string
+  title: string
+  description?: string | null
+  status: ServiceListingStatus
+  menuItems?: ServiceMenuItem[]
+}
+
+export interface PublicServiceProvider {
+  id: string
+  businessName: string
+  description?: string | null
+  logo?: string | null
+  phone?: string | null
+  whatsapp?: string | null
+  status?: string
+  category: ServiceCategory
+  coverageAreas?: ServiceCoverageArea[]
+  listings?: ServiceListing[]
+}
+
+export interface ServiceProviderFilters {
+  page?: number
+  limit?: number
+  city?: string
+  area?: string
+  category?: string
+}
+
+export interface ActiveRentalLocation {
+  city: string
+  area: string
+  propertyTitle: string
+  propertyId: string
+  rentalId: string
+}
