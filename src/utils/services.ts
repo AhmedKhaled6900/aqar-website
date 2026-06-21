@@ -45,7 +45,8 @@ export function getProviderLocationLabel(
 }
 
 export function formatCoverageArea(area: ServiceCoverageArea): string {
-  return `${area.city} — ${area.area}`
+  if (area.area) return `${area.city} — ${area.area}`
+  return area.city
 }
 
 export function toWhatsAppUrl(phone: string): string {
@@ -98,6 +99,9 @@ function normalizeMenuItem(raw: unknown): ServiceMenuItem | null {
     price,
     description:
       typeof item.description === 'string' ? item.description : null,
+    prepTimeMinutes:
+      typeof item.prepTimeMinutes === 'number' ? item.prepTimeMinutes : null,
+    sortOrder: typeof item.sortOrder === 'number' ? item.sortOrder : undefined,
   }
 }
 
@@ -124,8 +128,20 @@ function normalizeListing(raw: unknown): ServiceListing | null {
     description:
       typeof listing.description === 'string' ? listing.description : null,
     status: statusRaw.toUpperCase() as ServiceListing['status'],
+    metadata:
+      listing.metadata && typeof listing.metadata === 'object'
+        ? (listing.metadata as Record<string, unknown>)
+        : null,
     menuItems,
   }
+}
+
+function normalizeMenuItems(raw: unknown): ServiceMenuItem[] {
+  if (!Array.isArray(raw)) return []
+  return raw
+    .map(normalizeMenuItem)
+    .filter((item): item is ServiceMenuItem => item !== null)
+    .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
 }
 
 export function normalizePublicServiceProvider(
@@ -139,17 +155,29 @@ export function normalizePublicServiceProvider(
         .filter((listing): listing is ServiceListing => listing !== null)
     : []
 
+  const menuItems = normalizeMenuItems(provider.menuItems)
+
   return {
     ...(raw as PublicServiceProvider),
+    menuItems,
     listings,
   }
 }
 
+export function getProviderMenuItems(
+  menuItems?: ServiceMenuItem[],
+): ServiceMenuItem[] {
+  return (menuItems ?? []).slice().sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
+}
+
+/** إعلانات المقدم (قد لا تحتوي على منيو — المنيو على مستوى البروفايدر) */
+export function getProviderListings(listings: ServiceListing[]): ServiceListing[] {
+  return listings.filter((listing) => isActiveListingStatus(listing.status))
+}
+
+/** @deprecated use getProviderListings — kept for compatibility */
 export function getOrderableListings(listings: ServiceListing[]): ServiceListing[] {
-  return listings.filter(
-    (listing) =>
-      isActiveListingStatus(listing.status) && (listing.menuItems?.length ?? 0) > 0,
-  )
+  return getProviderListings(listings)
 }
 
 export function calculateServiceOrderSubtotal(

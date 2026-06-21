@@ -27,8 +27,8 @@ export const createServiceOrderSchema = z.object({
 export type CreateServiceOrderFormInput = z.infer<typeof createServiceOrderSchema>
 
 export interface ServiceOrderCartLine {
-  listingId: string
   name: string
   unitPrice: number
   quantity: number
+  menuItemId?: string
 }

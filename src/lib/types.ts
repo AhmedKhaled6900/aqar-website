@@ -300,8 +300,9 @@ export interface ServiceCategory {
 }
 
 export interface ServiceCoverageArea {
+  id?: string
   city: string
-  area: string
+  area?: string | null
   isActive: boolean
 }
 
@@ -310,13 +311,16 @@ export interface ServiceMenuItem {
   name: string
   price: number
   description?: string | null
+  prepTimeMinutes?: number | null
+  sortOrder?: number
 }
 
 export interface ServiceListing {
   id: string
   title: string
   description?: string | null
-  status: ServiceListingStatus
+  status?: ServiceListingStatus
+  metadata?: Record<string, unknown> | null
   menuItems?: ServiceMenuItem[]
 }
 
@@ -330,6 +334,7 @@ export interface PublicServiceProvider {
   status?: string
   category: ServiceCategory
   coverageAreas?: ServiceCoverageArea[]
+  menuItems?: ServiceMenuItem[]
   listings?: ServiceListing[]
 }
 
