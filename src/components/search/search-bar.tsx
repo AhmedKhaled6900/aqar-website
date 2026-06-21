@@ -19,6 +19,8 @@ import type { PropertyPurpose, PricePeriod } from '@/lib/types'
 
 interface SearchBarProps {
   compact?: boolean
+  /** Hero: stacks longer and fits narrow columns beside floating cards */
+  variant?: 'default' | 'hero'
   defaultValues?: {
     city?: string
     purpose?: PropertyPurpose
@@ -27,7 +29,8 @@ interface SearchBarProps {
   }
 }
 
-export function SearchBar({ compact, defaultValues }: SearchBarProps) {
+export function SearchBar({ compact, variant = 'default', defaultValues }: SearchBarProps) {
+  const isHero = variant === 'hero'
   const router = useRouter()
   const { data: categories = [] } = useCategorySelectMenu()
   const [city, setCity] = useState(defaultValues?.city ?? '')
@@ -51,21 +54,25 @@ export function SearchBar({ compact, defaultValues }: SearchBarProps) {
     router.push(`/properties?${params.toString()}`)
   }
 
+  const fieldGridClass = compact
+    ? 'grid min-w-0 flex-1 grid-cols-1 gap-3 sm:grid-cols-2'
+    : isHero
+      ? 'grid min-w-0 flex-1 grid-cols-1 gap-3 min-[480px]:grid-cols-2 xl:grid-cols-3'
+      : 'grid min-w-0 flex-1 grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3'
+
+  const wrapperClass = compact
+    ? 'flex flex-col gap-3 sm:flex-row sm:items-end'
+    : isHero
+      ? 'animate-slide-up flex flex-col gap-3 rounded-2xl border border-slate-200/80 bg-white p-3 shadow-soft-lg min-[480px]:p-4 xl:flex-row xl:items-end xl:p-5'
+      : 'animate-slide-up flex flex-col gap-3 rounded-2xl border border-slate-200/80 bg-white p-4 shadow-soft-lg sm:flex-row sm:items-end sm:p-5'
+
+  const buttonClass = isHero
+    ? 'h-10 w-full shrink-0 gap-2 xl:w-auto'
+    : 'h-10 w-full shrink-0 gap-2 sm:w-auto'
+
   return (
-    <div
-      className={
-        compact
-          ? 'flex flex-col gap-3 sm:flex-row sm:items-end'
-          : 'animate-slide-up flex flex-col gap-3 rounded-2xl border border-slate-200/80 bg-white p-4 shadow-soft-lg sm:flex-row sm:items-end sm:p-5'
-      }
-    >
-      <div
-        className={
-          compact
-            ? 'grid min-w-0 flex-1 grid-cols-1 gap-3 sm:grid-cols-2'
-            : 'grid min-w-0 flex-1 grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3'
-        }
-      >
+    <div className={wrapperClass}>
+      <div className={fieldGridClass}>
         <Select value={city} onValueChange={setCity}>
           <SelectTrigger className="overflow-hidden whitespace-nowrap">
             <SelectValue placeholder="المدينة" className="truncate" />
@@ -124,10 +131,7 @@ export function SearchBar({ compact, defaultValues }: SearchBarProps) {
         )}
       </div>
 
-      <Button
-        onClick={handleSearch}
-        className="h-10 w-full shrink-0 gap-2 sm:w-auto"
-      >
+      <Button onClick={handleSearch} className={buttonClass}>
         <Search className="h-4 w-4" />
         بحث
       </Button>

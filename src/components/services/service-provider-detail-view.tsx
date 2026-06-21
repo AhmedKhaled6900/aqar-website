@@ -111,6 +111,7 @@ export function ServiceProviderDetailView({
                 menuItems={menuItems}
                 listings={listings}
                 fixedListingId={activeListing?.id}
+                deliveryFee={provider.deliveryFee ?? 0}
               />
             ) : hasMenu ? (
               <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-soft">
@@ -157,7 +158,7 @@ export function ServiceProviderDetailView({
         <aside className="space-y-4 lg:sticky lg:top-20 lg:self-start">
           {canOrder && hasMenu && (
             <div className="rounded-xl border border-primary/20 bg-primary-light/40 p-4 text-sm text-primary">
-              المنيو الكامل للمقدم يظهر أولاً. الطلب يُربط بإعلان محدد عند التأكيد.
+              اختر الأصناف ثم أكمل بيانات التوصيل — رسوم التوصيل تُحسب تلقائياً.
             </div>
           )}
 

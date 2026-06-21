@@ -19,12 +19,18 @@ import { PERMISSIONS } from '@/constants/permissions'
 import { useAuthStore } from '@/store/auth-store'
 import type { CreateServiceOrderFormInput, ServiceOrderCartLine } from '@/schemas/service-order'
 import type { ServiceListing, ServiceMenuItem } from '@/lib/types'
-import { formatServicePrice, getProviderListings } from '@/utils/services'
+import {
+  formatServicePrice,
+  getProviderListings,
+  resolveDeliveryFee,
+  resolveOrderListingId,
+} from '@/utils/services'
 
 interface ServiceOrderableMenuProps {
   menuItems: ServiceMenuItem[]
   listings: ServiceListing[]
   fixedListingId?: string
+  deliveryFee: number
 }
 
 function getCartLineKey(item: ServiceMenuItem): string {
@@ -35,6 +41,7 @@ export function ServiceOrderableMenu({
   menuItems,
   listings,
   fixedListingId,
+  deliveryFee,
 }: ServiceOrderableMenuProps) {
   const router = useRouter()
   const pathname = usePathname()
@@ -50,20 +57,30 @@ export function ServiceOrderableMenu({
     [listings],
   )
 
+  const listingId = useMemo(
+    () => resolveOrderListingId(listings, fixedListingId),
+    [listings, fixedListingId],
+  )
+
+  const activeListing = availableListings.find((l) => l.id === listingId)
+  const resolvedDeliveryFee = resolveDeliveryFee(
+    { deliveryFee },
+    activeListing,
+  )
+
   const cartTotal = cart.reduce(
     (sum, line) => sum + line.quantity * line.unitPrice,
     0,
   )
 
   const cartItemCount = cart.reduce((sum, line) => sum + line.quantity, 0)
+  const orderTotal = cartTotal + resolvedDeliveryFee
 
   const canCreateOrder =
     user?.role === 'CUSTOMER' &&
     permissions.includes(PERMISSIONS.SERVICE_ORDER_CREATE)
 
-  const canCheckout =
-    cart.length > 0 &&
-    (fixedListingId != null || availableListings.length > 0)
+  const canCheckout = cart.length > 0 && !!listingId
 
   function addItem(item: ServiceMenuItem) {
     setCart((prev) => {
@@ -196,7 +213,7 @@ export function ServiceOrderableMenu({
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <p className="text-sm text-slate-500">
-                {cartItemCount} صنف · {formatServicePrice(cartTotal)}
+                {cartItemCount} صنف · شامل التوصيل {formatServicePrice(orderTotal)}
               </p>
             </div>
 
@@ -211,7 +228,7 @@ export function ServiceOrderableMenu({
                 حسابك غير مفعّل لطلب الخدمات
               </p>
             ) : !canCheckout ? (
-              <p className="text-sm text-amber-700">لا يوجد إعلان مرتبط بالطلب</p>
+              <p className="text-sm text-amber-700">لا يوجد إعلان متاح للطلب</p>
             ) : (
               <Dialog open={open} onOpenChange={setOpen}>
                 <DialogTrigger asChild>
@@ -224,21 +241,23 @@ export function ServiceOrderableMenu({
                   <DialogHeader>
                     <DialogTitle>تأكيد الطلب</DialogTitle>
                   </DialogHeader>
-                  <ServiceOrderForm
-                    key={cart.map((c) => `${c.name}-${c.quantity}`).join('|')}
-                    listings={availableListings}
-                    fixedListingId={fixedListingId}
-                    cart={cart}
-                    defaultDelivery={{
-                      city: location?.city,
-                      area: location?.area,
-                      address: location
-                        ? `${location.propertyTitle} — ${location.city} / ${location.area}`
-                        : undefined,
-                    }}
-                    isPending={createOrder.isPending}
-                    onSubmit={handleSubmit}
-                  />
+                  {listingId && (
+                    <ServiceOrderForm
+                      key={cart.map((c) => `${c.name}-${c.quantity}`).join('|')}
+                      listingId={listingId}
+                      deliveryFee={resolvedDeliveryFee}
+                      cart={cart}
+                      defaultDelivery={{
+                        city: location?.city,
+                        area: location?.area,
+                        address: location
+                          ? `${location.propertyTitle} — ${location.city} / ${location.area}`
+                          : undefined,
+                      }}
+                      isPending={createOrder.isPending}
+                      onSubmit={handleSubmit}
+                    />
+                  )}
                 </DialogContent>
               </Dialog>
             )}

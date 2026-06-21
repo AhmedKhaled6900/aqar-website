@@ -336,6 +336,7 @@ export interface PublicServiceProvider {
   coverageAreas?: ServiceCoverageArea[]
   menuItems?: ServiceMenuItem[]
   listings?: ServiceListing[]
+  deliveryFee?: number | null
 }
 
 export interface ServiceProviderFilters {

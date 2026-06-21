@@ -78,7 +78,7 @@ function FloatingMiniCard({
     <Link
       href={href}
       className={cn(
-        'group block w-[220px] overflow-hidden rounded-2xl border border-white/90 bg-white shadow-[0_12px_40px_rgba(15,23,42,0.12)] ring-1 ring-slate-900/5 transition-all duration-300 hover:scale-[1.04] hover:shadow-[0_24px_48px_rgba(216,62,28,0.2)] sm:w-[250px]',
+        'group block w-[200px] overflow-hidden rounded-2xl border border-white/90 bg-white shadow-[0_12px_40px_rgba(15,23,42,0.12)] ring-1 ring-slate-900/5 transition-all duration-300 hover:scale-[1.04] hover:shadow-[0_24px_48px_rgba(216,62,28,0.2)] min-[480px]:w-[220px] xl:w-[250px]',
         animationClass,
         className,
       )}
@@ -128,7 +128,7 @@ export function FloatingPropertyCards({ properties }: FloatingPropertyCardsProps
   return (
     <>
       {/* Desktop: stacked floating cards */}
-      <div className="relative mx-auto hidden h-[440px] w-full max-w-md lg:block">
+      <div className="relative mx-auto hidden h-[380px] w-full max-w-md xl:block xl:h-[440px]">
         <div
           className="pointer-events-none absolute left-1/2 top-1/2 h-56 w-56 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/15 blur-3xl"
           aria-hidden
@@ -161,12 +161,12 @@ export function FloatingPropertyCards({ properties }: FloatingPropertyCardsProps
       </div>
 
       {/* Mobile / tablet: horizontal scroll */}
-      <div className="flex gap-4 overflow-x-auto pb-2 pt-2 lg:hidden [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <div className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 pt-2 min-[480px]:gap-4 xl:hidden [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {cards.map((property, i) => (
           <FloatingMiniCard
             key={property.id}
             property={property}
-            className="shrink-0"
+            className="shrink-0 snap-center"
             animationClass={
               i === 0 ? 'animate-float' : i === 1 ? 'animate-float-slow' : 'animate-float-delayed'
             }

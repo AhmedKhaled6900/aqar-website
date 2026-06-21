@@ -157,10 +157,20 @@ export function normalizePublicServiceProvider(
 
   const menuItems = normalizeMenuItems(provider.menuItems)
 
+  const deliveryFeeRaw = provider.deliveryFee
+  const deliveryFee =
+    typeof deliveryFeeRaw === 'number'
+      ? deliveryFeeRaw
+      : typeof deliveryFeeRaw === 'string'
+        ? Number(deliveryFeeRaw)
+        : null
+
   return {
     ...(raw as PublicServiceProvider),
     menuItems,
     listings,
+    deliveryFee:
+      deliveryFee != null && !Number.isNaN(deliveryFee) ? deliveryFee : null,
   }
 }
 
@@ -178,6 +188,30 @@ export function getProviderListings(listings: ServiceListing[]): ServiceListing[
 /** @deprecated use getProviderListings — kept for compatibility */
 export function getOrderableListings(listings: ServiceListing[]): ServiceListing[] {
   return getProviderListings(listings)
+}
+
+export function resolveOrderListingId(
+  listings: ServiceListing[],
+  fixedListingId?: string,
+): string | undefined {
+  if (fixedListingId) return fixedListingId
+  return getProviderListings(listings)[0]?.id
+}
+
+export function resolveDeliveryFee(
+  provider: Pick<PublicServiceProvider, 'deliveryFee'>,
+  listing?: ServiceListing | null,
+): number {
+  const listingMeta = listing?.metadata?.deliveryFee
+  if (typeof listingMeta === 'number') return listingMeta
+  if (typeof listingMeta === 'string') {
+    const parsed = Number(listingMeta)
+    if (!Number.isNaN(parsed)) return parsed
+  }
+  if (provider.deliveryFee != null && !Number.isNaN(provider.deliveryFee)) {
+    return provider.deliveryFee
+  }
+  return 0
 }
 
 export function calculateServiceOrderSubtotal(
