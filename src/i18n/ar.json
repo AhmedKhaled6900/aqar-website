@@ -96,6 +96,7 @@
     "myReviews": "تقييماتي",
     "myComments": "تعليقاتي",
     "myBookings": "حجوزاتي",
+    "myServiceOrders": "طلبات الخدمات",
     "settings": "الإعدادات"
   },
   "errors": {
@@ -128,6 +129,13 @@
     "menu": "المنيو",
     "contact": "تواصل",
     "call": "اتصال",
-    "whatsapp": "واتساب"
+    "whatsapp": "واتساب",
+    "myOrders": "طلباتي",
+    "placeOrder": "إتمام الطلب",
+    "orderSuccess": "تم إرسال الطلب بنجاح",
+    "loginToOrder": "سجّل الدخول للطلب",
+    "noOrders": "لا توجد طلبات",
+    "orderItems": "عناصر الطلب",
+    "deliveryInfo": "بيانات التوصيل"
   }
 }

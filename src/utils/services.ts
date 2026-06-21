@@ -1,4 +1,10 @@
-import type { Booking, PublicServiceProvider, ServiceCoverageArea } from '@/lib/types'
+import type {
+  Booking,
+  PublicServiceProvider,
+  ServiceCoverageArea,
+  ServiceListing,
+  ServiceMenuItem,
+} from '@/lib/types'
 
 const ACTIVE_RENTAL_STATUSES = ['ACTIVE', 'CONFIRMED'] as const
 
@@ -53,4 +59,123 @@ export function formatServicePrice(price: number): string {
     currency: 'SAR',
     maximumFractionDigits: 0,
   }).format(price)
+}
+
+export function isFoodServiceCategory(slug: string): boolean {
+  return (
+    slug === 'restaurants' ||
+    slug === 'cafes' ||
+    slug === 'home-cooking'
+  )
+}
+
+export function canPlaceServiceOrder(categorySlug: string): boolean {
+  return categorySlug !== 'transport'
+}
+
+export function isActiveListingStatus(status?: string | null): boolean {
+  if (!status) return true
+  return status.toUpperCase() === 'ACTIVE'
+}
+
+function normalizeMenuItem(raw: unknown): ServiceMenuItem | null {
+  if (!raw || typeof raw !== 'object') return null
+  const item = raw as Record<string, unknown>
+  const name = typeof item.name === 'string' ? item.name : null
+  const priceValue = item.price ?? item.unitPrice
+  const price =
+    typeof priceValue === 'number'
+      ? priceValue
+      : typeof priceValue === 'string'
+        ? Number(priceValue)
+        : NaN
+
+  if (!name || Number.isNaN(price)) return null
+
+  return {
+    id: typeof item.id === 'string' ? item.id : undefined,
+    name,
+    price,
+    description:
+      typeof item.description === 'string' ? item.description : null,
+  }
+}
+
+function normalizeListing(raw: unknown): ServiceListing | null {
+  if (!raw || typeof raw !== 'object') return null
+  const listing = raw as Record<string, unknown>
+  const id = typeof listing.id === 'string' ? listing.id : null
+  const title = typeof listing.title === 'string' ? listing.title : null
+  if (!id || !title) return null
+
+  const rawItems = listing.menuItems ?? listing.items ?? listing.menu
+  const menuItems = Array.isArray(rawItems)
+    ? rawItems
+        .map(normalizeMenuItem)
+        .filter((item): item is ServiceMenuItem => item !== null)
+    : []
+
+  const statusRaw =
+    typeof listing.status === 'string' ? listing.status : 'ACTIVE'
+
+  return {
+    id,
+    title,
+    description:
+      typeof listing.description === 'string' ? listing.description : null,
+    status: statusRaw.toUpperCase() as ServiceListing['status'],
+    menuItems,
+  }
+}
+
+export function normalizePublicServiceProvider(
+  raw: PublicServiceProvider | Record<string, unknown>,
+): PublicServiceProvider {
+  const provider = raw as Record<string, unknown>
+  const listingsRaw = provider.listings
+  const listings = Array.isArray(listingsRaw)
+    ? listingsRaw
+        .map(normalizeListing)
+        .filter((listing): listing is ServiceListing => listing !== null)
+    : []
+
+  return {
+    ...(raw as PublicServiceProvider),
+    listings,
+  }
+}
+
+export function getOrderableListings(listings: ServiceListing[]): ServiceListing[] {
+  return listings.filter(
+    (listing) =>
+      isActiveListingStatus(listing.status) && (listing.menuItems?.length ?? 0) > 0,
+  )
+}
+
+export function calculateServiceOrderSubtotal(
+  items: { quantity: number; unitPrice: number }[],
+): number {
+  return items.reduce((sum, item) => sum + item.quantity * item.unitPrice, 0)
+}
+
+export function calculateServiceOrderTotal(
+  items: { quantity: number; unitPrice: number }[],
+  deliveryFee: number,
+): number {
+  return calculateServiceOrderSubtotal(items) + deliveryFee
+}
+
+export function getServiceOrderStatusLabel(status: string): string {
+  const labels: Record<string, string> = {
+    PENDING: 'قيد المراجعة',
+    ACCEPTED: 'مقبول',
+    CONFIRMED: 'مؤكد',
+    PREPARING: 'قيد التحضير',
+    READY: 'جاهز',
+    OUT_FOR_DELIVERY: 'في الطريق',
+    DELIVERED: 'تم التسليم',
+    CANCELLED: 'ملغي',
+    REJECTED: 'مرفوض',
+  }
+  return labels[status] ?? status
 }

@@ -348,3 +348,49 @@ export interface ActiveRentalLocation {
   propertyId: string
   rentalId: string
 }
+
+export type ServiceOrderStatus =
+  | 'PENDING'
+  | 'ACCEPTED'
+  | 'CONFIRMED'
+  | 'PREPARING'
+  | 'READY'
+  | 'OUT_FOR_DELIVERY'
+  | 'DELIVERED'
+  | 'CANCELLED'
+  | 'REJECTED'
+
+export interface ServiceOrderItem {
+  name: string
+  quantity: number
+  unitPrice: number
+  notes?: string | null
+}
+
+export interface CreateServiceOrderInput {
+  listingId: string
+  items: ServiceOrderItem[]
+  deliveryCity: string
+  deliveryArea: string
+  deliveryAddress: string
+  deliveryFee: number
+  notes?: string
+}
+
+export interface ServiceOrder {
+  id: string
+  listingId: string
+  status: ServiceOrderStatus
+  items: ServiceOrderItem[]
+  deliveryCity: string
+  deliveryArea: string
+  deliveryAddress: string
+  deliveryFee: number
+  notes?: string | null
+  subtotal?: number
+  total?: number
+  provider?: Pick<PublicServiceProvider, 'id' | 'businessName' | 'logo'>
+  listing?: Pick<ServiceListing, 'id' | 'title'>
+  createdAt: string
+  updatedAt?: string
+}

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { ServiceProviderDetailView } from '@/components/services/service-provider-detail-view'
+import { ServiceProviderDetailClient } from '@/components/services/service-provider-detail-client'
 import { fetchPublicProviderDetail } from '@/lib/api/server'
 
 interface PageProps {
@@ -30,5 +30,5 @@ export default async function ServiceProviderDetailPage({ params }: PageProps) {
     notFound()
   }
 
-  return <ServiceProviderDetailView provider={provider} />
+  return <ServiceProviderDetailClient providerId={id} initialProvider={provider} />
 }

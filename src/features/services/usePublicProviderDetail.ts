@@ -3,6 +3,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { useAxiosInstance } from '@/hooks/useAxiosInstance'
 import type { PublicServiceProvider } from '@/lib/types'
+import { normalizePublicServiceProvider } from '@/utils/services'
 
 export function usePublicProviderDetail(id: string) {
   const axios = useAxiosInstance()
@@ -13,7 +14,7 @@ export function usePublicProviderDetail(id: string) {
       const { data } = await axios.get<PublicServiceProvider>(
         `/services/providers/${id}`,
       )
-      return data
+      return normalizePublicServiceProvider(data)
     },
     enabled: !!id,
     staleTime: 60_000,

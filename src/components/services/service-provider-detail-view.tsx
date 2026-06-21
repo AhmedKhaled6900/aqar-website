@@ -6,8 +6,14 @@ import Image from 'next/image'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { ServiceListingMenu } from '@/components/services/service-listing-menu'
+import { ServiceOrderableMenu } from '@/components/services/service-orderable-menu'
 import type { PublicServiceProvider } from '@/lib/types'
-import { formatCoverageArea, toWhatsAppUrl } from '@/utils/services'
+import {
+  canPlaceServiceOrder,
+  formatCoverageArea,
+  getOrderableListings,
+  toWhatsAppUrl,
+} from '@/utils/services'
 
 interface ServiceProviderDetailViewProps {
   provider: PublicServiceProvider
@@ -16,7 +22,9 @@ interface ServiceProviderDetailViewProps {
 export function ServiceProviderDetailView({ provider }: ServiceProviderDetailViewProps) {
   const activeCoverage = provider.coverageAreas?.filter((area) => area.isActive) ?? []
   const listings = provider.listings ?? []
+  const orderableListings = getOrderableListings(listings)
   const whatsappUrl = provider.whatsapp ? toWhatsAppUrl(provider.whatsapp) : null
+  const canOrder = canPlaceServiceOrder(provider.category.slug)
 
   return (
     <div className="container px-4 py-8">
@@ -35,6 +43,9 @@ export function ServiceProviderDetailView({ provider }: ServiceProviderDetailVie
             <div>
               <div className="flex flex-wrap gap-2">
                 <Badge variant="secondary">{provider.category.name}</Badge>
+                {canOrder && orderableListings.length > 0 && (
+                  <Badge variant="rent">طلب أونلاين</Badge>
+                )}
               </div>
               <h1 className="mt-2 text-3xl font-bold text-slate-900">
                 {provider.businessName}
@@ -64,12 +75,34 @@ export function ServiceProviderDetailView({ provider }: ServiceProviderDetailVie
           )}
 
           <div>
-            <h2 className="mb-4 text-xl font-semibold text-slate-900">المنيو</h2>
-            <ServiceListingMenu listings={listings} />
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+              <h2 className="text-xl font-semibold text-slate-900">منيو الإعلانات</h2>
+              {canOrder && orderableListings.length > 0 && (
+                <p className="text-sm text-slate-500">
+                  اختر الأصناف من كل إعلان ثم أكمل الطلب
+                </p>
+              )}
+            </div>
+
+            {canOrder && orderableListings.length > 0 ? (
+              <ServiceOrderableMenu listings={listings} />
+            ) : listings.length > 0 ? (
+              <ServiceListingMenu listings={listings} />
+            ) : (
+              <p className="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center text-slate-500">
+                لا توجد إعلانات أو منيو متاح حالياً
+              </p>
+            )}
           </div>
         </div>
 
-        <aside className="lg:sticky lg:top-20 lg:self-start">
+        <aside className="space-y-4 lg:sticky lg:top-20 lg:self-start">
+          {canOrder && orderableListings.length > 0 && (
+            <div className="rounded-xl border border-primary/20 bg-primary-light/40 p-4 text-sm text-primary">
+              كل إعلان له منيو مستقل. اختر الأصناف (+) ثم اضغط «إتمام الطلب».
+            </div>
+          )}
+
           <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-soft">
             <h2 className="text-lg font-semibold text-slate-900">تواصل</h2>
             <div className="mt-4 flex flex-col gap-2">
@@ -94,6 +127,12 @@ export function ServiceProviderDetailView({ provider }: ServiceProviderDetailVie
               )}
             </div>
           </div>
+
+          {canOrder && (
+            <Button asChild variant="outline" className="w-full">
+              <Link href="/account/service-orders">طلباتي</Link>
+            </Button>
+          )}
         </aside>
       </div>
     </div>

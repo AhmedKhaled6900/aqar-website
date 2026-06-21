@@ -17,4 +17,6 @@ export const PERMISSIONS = {
   OFFER_READ: 'offer.read',
   OFFER_COUNTER: 'offer.counter',
   BOOKING_READ: 'booking.read',
+  SERVICE_ORDER_CREATE: 'service.order.create',
+  SERVICE_ORDER_READ: 'service.order.read',
 } as const

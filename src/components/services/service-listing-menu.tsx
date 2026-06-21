@@ -1,21 +1,28 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import type { ServiceListing } from '@/lib/types'
-import { formatServicePrice } from '@/utils/services'
+import { formatServicePrice, getOrderableListings } from '@/utils/services'
 
 interface ServiceListingMenuProps {
   listings: ServiceListing[]
 }
 
 export function ServiceListingMenu({ listings }: ServiceListingMenuProps) {
-  const activeListings = listings.filter((listing) => listing.status === 'ACTIVE')
+  const visibleListings = getOrderableListings(listings)
 
-  if (activeListings.length === 0) return null
+  if (visibleListings.length === 0) {
+    return (
+      <p className="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center text-slate-500">
+        لا توجد عناصر في المنيو حالياً
+      </p>
+    )
+  }
 
   return (
     <div className="space-y-4">
-      {activeListings.map((listing) => (
+      {visibleListings.map((listing) => (
         <Card key={listing.id}>
           <CardHeader className="pb-2">
+            <p className="text-xs font-medium text-primary">إعلان</p>
             <CardTitle className="text-lg">{listing.title}</CardTitle>
             {listing.description && (
               <p className="text-sm text-slate-500">{listing.description}</p>

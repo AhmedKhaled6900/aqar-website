@@ -1,5 +1,6 @@
 import { API_URL } from '@/lib/api/config'
 import { normalizePaginatedResponse } from '@/lib/api/pagination'
+import { normalizePublicServiceProvider } from '@/utils/services'
 import { buildPropertiesQueryParams, buildQueryString, buildServicesQueryParams } from '@/lib/utils'
 import type {
   PaginatedResponse,
@@ -105,5 +106,6 @@ export async function fetchPublicProviders(
 export async function fetchPublicProviderDetail(
   id: string,
 ): Promise<PublicServiceProvider> {
-  return serverFetch<PublicServiceProvider>(`/services/providers/${id}`)
+  const data = await serverFetch<PublicServiceProvider>(`/services/providers/${id}`)
+  return normalizePublicServiceProvider(data)
 }

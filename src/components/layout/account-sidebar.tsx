@@ -6,6 +6,7 @@ import {
   Calendar,
   Heart,
   MessageSquare,
+  ShoppingBag,
   ShoppingCart,
   Star,
   Tag,
@@ -21,6 +22,7 @@ const items = [
   { href: '/account/reviews', label: 'تقييماتي', icon: Star },
   { href: '/account/comments', label: 'تعليقاتي', icon: MessageSquare },
   { href: '/account/bookings', label: 'إيجاراتي', icon: Calendar },
+  { href: '/account/service-orders', label: 'طلبات الخدمات', icon: ShoppingBag },
 ]
 
 export function AccountSidebar() {

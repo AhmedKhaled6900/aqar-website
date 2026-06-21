@@ -20,6 +20,7 @@ export const ACCOUNT_ROUTES = [
   '/account/reviews',
   '/account/comments',
   '/account/bookings',
+  '/account/service-orders',
   '/account/profile',
   '/account/notifications',
   '/account/messages',
