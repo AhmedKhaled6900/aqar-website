@@ -8,25 +8,19 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import {
   createServiceOrderSchema,
-  type CreateServiceOrderFormInput,
+  serviceOrderDeliverySchema,
+  type CreateServiceOrderInput,
   type ServiceOrderCartLine,
+  type ServiceOrderDeliveryInput,
 } from '@/schemas/service-order'
 import {
   calculateServiceOrderSubtotal,
   calculateServiceOrderTotal,
   formatServicePrice,
 } from '@/utils/services'
-import { z } from 'zod'
-
-const deliverySchema = createServiceOrderSchema.omit({
-  listingId: true,
-  items: true,
-  deliveryFee: true,
-})
-
-type DeliveryFormInput = z.infer<typeof deliverySchema>
 
 interface ServiceOrderFormProps {
+  providerId: string
   listingId: string
   deliveryFee: number
   cart: ServiceOrderCartLine[]
@@ -36,10 +30,11 @@ interface ServiceOrderFormProps {
     address?: string
   }
   isPending?: boolean
-  onSubmit: (data: CreateServiceOrderFormInput) => Promise<void>
+  onSubmit: (data: CreateServiceOrderInput) => Promise<void>
 }
 
 export function ServiceOrderForm({
+  providerId,
   listingId,
   deliveryFee,
   cart,
@@ -52,8 +47,8 @@ export function ServiceOrderForm({
     handleSubmit,
     setError,
     formState: { errors },
-  } = useForm<DeliveryFormInput>({
-    resolver: zodResolver(deliverySchema),
+  } = useForm<ServiceOrderDeliveryInput>({
+    resolver: zodResolver(serviceOrderDeliverySchema),
     defaultValues: {
       deliveryCity: defaultDelivery?.city ?? '',
       deliveryArea: defaultDelivery?.area ?? '',
@@ -65,19 +60,19 @@ export function ServiceOrderForm({
   const subtotal = calculateServiceOrderSubtotal(cart)
   const total = calculateServiceOrderTotal(cart, deliveryFee)
 
-  async function handleFormSubmit(formData: DeliveryFormInput) {
+  async function handleFormSubmit(formData: ServiceOrderDeliveryInput) {
     const payload = {
+      providerId,
       listingId,
-      items: cart.map(({ name, quantity, unitPrice }) => ({
-        name,
+      items: cart.map(({ menuItemId, quantity, notes }) => ({
+        menuItemId,
         quantity,
-        unitPrice,
+        ...(notes ? { notes } : {}),
       })),
       deliveryCity: formData.deliveryCity,
       deliveryArea: formData.deliveryArea,
       deliveryAddress: formData.deliveryAddress,
-      deliveryFee,
-      notes: formData.notes,
+      ...(formData.notes ? { notes: formData.notes } : {}),
     }
 
     const parsed = createServiceOrderSchema.safeParse(payload)
@@ -85,7 +80,7 @@ export function ServiceOrderForm({
       parsed.error.issues.forEach((issue) => {
         const field = issue.path[0]
         if (typeof field === 'string' && field in formData) {
-          setError(field as keyof DeliveryFormInput, { message: issue.message })
+          setError(field as keyof ServiceOrderDeliveryInput, { message: issue.message })
         }
       })
       return

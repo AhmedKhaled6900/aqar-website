@@ -17,7 +17,7 @@ import { useActiveRentalLocation } from '@/features/services/useActiveRentalLoca
 import { useCreateServiceOrder } from '@/features/services/useServiceOrders'
 import { PERMISSIONS } from '@/constants/permissions'
 import { useAuthStore } from '@/store/auth-store'
-import type { CreateServiceOrderFormInput, ServiceOrderCartLine } from '@/schemas/service-order'
+import type { CreateServiceOrderInput, ServiceOrderCartLine } from '@/schemas/service-order'
 import type { ServiceListing, ServiceMenuItem } from '@/lib/types'
 import {
   formatServicePrice,
@@ -27,6 +27,7 @@ import {
 } from '@/utils/services'
 
 interface ServiceOrderableMenuProps {
+  providerId: string
   menuItems: ServiceMenuItem[]
   listings: ServiceListing[]
   fixedListingId?: string
@@ -38,6 +39,7 @@ function getCartLineKey(item: ServiceMenuItem): string {
 }
 
 export function ServiceOrderableMenu({
+  providerId,
   menuItems,
   listings,
   fixedListingId,
@@ -83,13 +85,13 @@ export function ServiceOrderableMenu({
   const canCheckout = cart.length > 0 && !!listingId
 
   function addItem(item: ServiceMenuItem) {
+    if (!item.id) return
+
     setCart((prev) => {
-      const existing = prev.find(
-        (line) => line.name === item.name && line.menuItemId === item.id,
-      )
+      const existing = prev.find((line) => line.menuItemId === item.id)
       if (existing) {
         return prev.map((line) =>
-          line.name === item.name && line.menuItemId === item.id
+          line.menuItemId === item.id
             ? { ...line, quantity: line.quantity + 1 }
             : line,
         )
@@ -97,20 +99,22 @@ export function ServiceOrderableMenu({
       return [
         ...prev,
         {
+          menuItemId: item.id!,
           name: item.name,
           unitPrice: item.price,
           quantity: 1,
-          menuItemId: item.id,
         },
       ]
     })
   }
 
   function updateQuantity(item: ServiceMenuItem, delta: number) {
+    if (!item.id) return
+
     setCart((prev) =>
       prev
         .map((line) => {
-          if (line.name !== item.name || line.menuItemId !== item.id) return line
+          if (line.menuItemId !== item.id) return line
           return { ...line, quantity: line.quantity + delta }
         })
         .filter((line) => line.quantity > 0),
@@ -118,14 +122,11 @@ export function ServiceOrderableMenu({
   }
 
   function getQuantity(item: ServiceMenuItem): number {
-    return (
-      cart.find(
-        (line) => line.name === item.name && line.menuItemId === item.id,
-      )?.quantity ?? 0
-    )
+    if (!item.id) return 0
+    return cart.find((line) => line.menuItemId === item.id)?.quantity ?? 0
   }
 
-  async function handleSubmit(data: CreateServiceOrderFormInput) {
+  async function handleSubmit(data: CreateServiceOrderInput) {
     try {
       await createOrder.mutateAsync(data)
       setCart([])
@@ -243,7 +244,8 @@ export function ServiceOrderableMenu({
                   </DialogHeader>
                   {listingId && (
                     <ServiceOrderForm
-                      key={cart.map((c) => `${c.name}-${c.quantity}`).join('|')}
+                      key={cart.map((c) => `${c.menuItemId}-${c.quantity}`).join('|')}
+                      providerId={providerId}
                       listingId={listingId}
                       deliveryFee={resolvedDeliveryFee}
                       cart={cart}

@@ -108,6 +108,7 @@ export function ServiceProviderDetailView({
 
             {canOrder && hasMenu ? (
               <ServiceOrderableMenu
+                providerId={provider.id}
                 menuItems={menuItems}
                 listings={listings}
                 fixedListingId={activeListing?.id}

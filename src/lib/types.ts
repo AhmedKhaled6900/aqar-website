@@ -373,13 +373,19 @@ export interface ServiceOrderItem {
   notes?: string | null
 }
 
+export interface CreateServiceOrderItemInput {
+  menuItemId: string
+  quantity: number
+  notes?: string
+}
+
 export interface CreateServiceOrderInput {
+  providerId: string
   listingId: string
-  items: ServiceOrderItem[]
+  items: CreateServiceOrderItemInput[]
   deliveryCity: string
   deliveryArea: string
   deliveryAddress: string
-  deliveryFee: number
   notes?: string
 }
 
