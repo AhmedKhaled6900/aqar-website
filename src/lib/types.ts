@@ -319,7 +319,9 @@ export interface ServiceListing {
   id: string
   title: string
   description?: string | null
+  imageUrl?: string | null
   status?: ServiceListingStatus
+  deliveryFee?: number | null
   metadata?: Record<string, unknown> | null
   menuItems?: ServiceMenuItem[]
 }

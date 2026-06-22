@@ -11,8 +11,11 @@ import type { PublicServiceProvider, ServiceListing } from '@/lib/types'
 import {
   canPlaceServiceOrder,
   formatCoverageArea,
+  formatServicePrice,
   getProviderListings,
-  getProviderMenuItems,
+  hasListingMenu,
+  resolveDeliveryFee,
+  resolveOrderMenuItems,
   toWhatsAppUrl,
 } from '@/utils/services'
 
@@ -26,12 +29,31 @@ export function ServiceProviderDetailView({
   activeListing,
 }: ServiceProviderDetailViewProps) {
   const activeCoverage = provider.coverageAreas?.filter((area) => area.isActive) ?? []
-  const menuItems = getProviderMenuItems(provider.menuItems)
   const listings = provider.listings ?? []
   const providerListings = getProviderListings(listings)
+  const isListingContext = !!activeListing
+  const usesListingMenu = isListingContext && hasListingMenu(activeListing)
+  const menuItems = resolveOrderMenuItems(provider, activeListing)
+  const mainMenuItems = resolveOrderMenuItems(provider)
+  const hasMenu = menuItems.length > 0
+  const hasMainMenu = mainMenuItems.length > 0
+  const deliveryFee = resolveDeliveryFee(provider, activeListing)
   const whatsappUrl = provider.whatsapp ? toWhatsAppUrl(provider.whatsapp) : null
   const canOrder = canPlaceServiceOrder(provider.category.slug)
-  const hasMenu = menuItems.length > 0
+
+  const menuTitle = isListingContext
+    ? usesListingMenu
+      ? `منيو ${activeListing.title}`
+      : `منيو ${provider.businessName}`
+    : `المنيو الرئيسي`
+
+  const menuSubtitle = isListingContext
+    ? usesListingMenu
+      ? 'اختر الأصناف من منيو هذا الإعلان ثم أكمل الطلب'
+      : 'يُستخدم المنيو الرئيسي — الطلب مرتبط بهذا الإعلان'
+    : canOrder && hasMainMenu
+      ? 'اختر الأصناف من المنيو الرئيسي — الطلب بدون إعلان'
+      : undefined
 
   return (
     <div className="container px-4 py-8">
@@ -47,19 +69,37 @@ export function ServiceProviderDetailView({
           )}
 
           <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
-            <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-2xl border border-slate-200 bg-slate-100">
-              <Image
-                src={provider.logo ?? '/placeholder-property.svg'}
-                alt={provider.businessName}
-                fill
-                className="object-cover"
-                sizes="96px"
-              />
-            </div>
+            {activeListing?.imageUrl ? (
+              <div className="relative h-40 w-full shrink-0 overflow-hidden rounded-2xl border border-slate-200 bg-slate-100 sm:h-32 sm:w-48">
+                <Image
+                  src={activeListing.imageUrl}
+                  alt={activeListing.title}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 640px) 100vw, 192px"
+                />
+              </div>
+            ) : (
+              <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-2xl border border-slate-200 bg-slate-100">
+                <Image
+                  src={provider.logo ?? '/placeholder-property.svg'}
+                  alt={provider.businessName}
+                  fill
+                  className="object-cover"
+                  sizes="96px"
+                />
+              </div>
+            )}
             <div>
               <div className="flex flex-wrap gap-2">
                 <Badge variant="secondary">{provider.category.name}</Badge>
-                {canOrder && hasMenu && (
+                {isListingContext && (
+                  <Badge variant="rent">طلب من إعلان</Badge>
+                )}
+                {!isListingContext && canOrder && hasMainMenu && (
+                  <Badge variant="outline">المنيو الرئيسي</Badge>
+                )}
+                {canOrder && hasMenu && !isListingContext && (
                   <Badge variant="rent">طلب أونلاين</Badge>
                 )}
               </div>
@@ -70,6 +110,11 @@ export function ServiceProviderDetailView({
                 {provider.businessName}
                 {activeListing ? ' — إعلان' : ''}
               </p>
+              {isListingContext && deliveryFee > 0 && (
+                <p className="mt-2 text-sm font-medium text-primary">
+                  رسوم التوصيل: {formatServicePrice(deliveryFee)}
+                </p>
+              )}
               {(activeListing?.description ?? provider.description) && (
                 <p className="mt-3 text-slate-600">
                   {activeListing?.description ?? provider.description}
@@ -98,11 +143,9 @@ export function ServiceProviderDetailView({
 
           <div>
             <div className="mb-4">
-              <h2 className="text-xl font-semibold text-slate-900">منيو {provider.businessName}</h2>
-              {canOrder && hasMenu && (
-                <p className="mt-1 text-sm text-slate-500">
-                  اختر الأصناف من المنيو الكامل ثم أكمل الطلب
-                </p>
+              <h2 className="text-xl font-semibold text-slate-900">{menuTitle}</h2>
+              {menuSubtitle && (
+                <p className="mt-1 text-sm text-slate-500">{menuSubtitle}</p>
               )}
             </div>
 
@@ -110,9 +153,9 @@ export function ServiceProviderDetailView({
               <ServiceOrderableMenu
                 providerId={provider.id}
                 menuItems={menuItems}
-                listings={listings}
-                fixedListingId={activeListing?.id}
-                deliveryFee={provider.deliveryFee ?? 0}
+                listingId={activeListing?.id}
+                activeListing={activeListing}
+                providerDeliveryFee={provider.deliveryFee ?? 0}
               />
             ) : hasMenu ? (
               <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-soft">
@@ -131,11 +174,7 @@ export function ServiceProviderDetailView({
                         )}
                       </div>
                       <p className="font-bold text-primary">
-                        {new Intl.NumberFormat('ar-SA', {
-                          style: 'currency',
-                          currency: 'SAR',
-                          maximumFractionDigits: 0,
-                        }).format(item.price)}
+                        {formatServicePrice(item.price)}
                       </p>
                     </li>
                   ))}
@@ -150,8 +189,18 @@ export function ServiceProviderDetailView({
 
           {!activeListing && providerListings.length > 0 && (
             <div>
-              <h2 className="mb-4 text-xl font-semibold text-slate-900">الإعلانات</h2>
-              <ServiceListingsSection providerId={provider.id} listings={listings} />
+              <div className="mb-4">
+                <h2 className="text-xl font-semibold text-slate-900">الإعلانات</h2>
+                <p className="mt-1 text-sm text-slate-500">
+                  كل إعلان له منيو خاص — اطلب مباشرة من الإعلان
+                </p>
+              </div>
+              <ServiceListingsSection
+                providerId={provider.id}
+                listings={listings}
+                providerDeliveryFee={provider.deliveryFee}
+                canOrder={canOrder}
+              />
             </div>
           )}
         </div>
@@ -159,7 +208,9 @@ export function ServiceProviderDetailView({
         <aside className="space-y-4 lg:sticky lg:top-20 lg:self-start">
           {canOrder && hasMenu && (
             <div className="rounded-xl border border-primary/20 bg-primary-light/40 p-4 text-sm text-primary">
-              اختر الأصناف ثم أكمل بيانات التوصيل — رسوم التوصيل تُحسب تلقائياً.
+              {isListingContext
+                ? 'الطلب مرتبط بهذا الإعلان — سيظهر للبروفايدر كطلب من إعلان.'
+                : 'الطلب من المنيو الرئيسي — سيظهر للبروفايدر بدون إعلان.'}
             </div>
           )}
 

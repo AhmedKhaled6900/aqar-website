@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { Minus, Plus, ShoppingBag } from 'lucide-react'
@@ -21,17 +21,16 @@ import type { CreateServiceOrderInput, ServiceOrderCartLine } from '@/schemas/se
 import type { ServiceListing, ServiceMenuItem } from '@/lib/types'
 import {
   formatServicePrice,
-  getProviderListings,
   resolveDeliveryFee,
-  resolveOrderListingId,
 } from '@/utils/services'
 
 interface ServiceOrderableMenuProps {
   providerId: string
   menuItems: ServiceMenuItem[]
-  listings: ServiceListing[]
-  fixedListingId?: string
-  deliveryFee: number
+  /** يُرسل للـ API فقط عند الطلب من إعلان */
+  listingId?: string
+  activeListing?: ServiceListing
+  providerDeliveryFee: number
 }
 
 function getCartLineKey(item: ServiceMenuItem): string {
@@ -41,9 +40,9 @@ function getCartLineKey(item: ServiceMenuItem): string {
 export function ServiceOrderableMenu({
   providerId,
   menuItems,
-  listings,
-  fixedListingId,
-  deliveryFee,
+  listingId,
+  activeListing,
+  providerDeliveryFee,
 }: ServiceOrderableMenuProps) {
   const router = useRouter()
   const pathname = usePathname()
@@ -54,19 +53,8 @@ export function ServiceOrderableMenu({
   const [open, setOpen] = useState(false)
   const [cart, setCart] = useState<ServiceOrderCartLine[]>([])
 
-  const availableListings = useMemo(
-    () => getProviderListings(listings),
-    [listings],
-  )
-
-  const listingId = useMemo(
-    () => resolveOrderListingId(listings, fixedListingId),
-    [listings, fixedListingId],
-  )
-
-  const activeListing = availableListings.find((l) => l.id === listingId)
   const resolvedDeliveryFee = resolveDeliveryFee(
-    { deliveryFee },
+    { deliveryFee: providerDeliveryFee },
     activeListing,
   )
 

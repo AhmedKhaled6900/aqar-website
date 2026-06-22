@@ -122,12 +122,30 @@ function normalizeListing(raw: unknown): ServiceListing | null {
   const statusRaw =
     typeof listing.status === 'string' ? listing.status : 'ACTIVE'
 
+  const imageUrl =
+    typeof listing.imageUrl === 'string'
+      ? listing.imageUrl
+      : typeof listing.image === 'string'
+        ? listing.image
+        : null
+
+  const deliveryFeeRaw = listing.deliveryFee
+  const deliveryFee =
+    typeof deliveryFeeRaw === 'number'
+      ? deliveryFeeRaw
+      : typeof deliveryFeeRaw === 'string'
+        ? Number(deliveryFeeRaw)
+        : null
+
   return {
     id,
     title,
     description:
       typeof listing.description === 'string' ? listing.description : null,
+    imageUrl,
     status: statusRaw.toUpperCase() as ServiceListing['status'],
+    deliveryFee:
+      deliveryFee != null && !Number.isNaN(deliveryFee) ? deliveryFee : null,
     metadata:
       listing.metadata && typeof listing.metadata === 'object'
         ? (listing.metadata as Record<string, unknown>)
@@ -180,7 +198,28 @@ export function getProviderMenuItems(
   return (menuItems ?? []).slice().sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
 }
 
-/** إعلانات المقدم (قد لا تحتوي على منيو — المنيو على مستوى البروفايدر) */
+export function getListingMenuItems(
+  listing?: ServiceListing | null,
+): ServiceMenuItem[] {
+  return getProviderMenuItems(listing?.menuItems)
+}
+
+export function hasListingMenu(listing?: ServiceListing | null): boolean {
+  return getListingMenuItems(listing).length > 0
+}
+
+/** منيو الطلب: منيو الإعلان إن وُجد، وإلا المنيو الرئيسي للبروفايدر */
+export function resolveOrderMenuItems(
+  provider: Pick<PublicServiceProvider, 'menuItems'>,
+  activeListing?: ServiceListing | null,
+): ServiceMenuItem[] {
+  if (activeListing && hasListingMenu(activeListing)) {
+    return getListingMenuItems(activeListing)
+  }
+  return getProviderMenuItems(provider.menuItems)
+}
+
+/** إعلانات المقدم النشطة */
 export function getProviderListings(listings: ServiceListing[]): ServiceListing[] {
   return listings.filter((listing) => isActiveListingStatus(listing.status))
 }
@@ -190,18 +229,17 @@ export function getOrderableListings(listings: ServiceListing[]): ServiceListing
   return getProviderListings(listings)
 }
 
-export function resolveOrderListingId(
-  listings: ServiceListing[],
-  fixedListingId?: string,
-): string | undefined {
-  if (fixedListingId) return fixedListingId
-  return getProviderListings(listings)[0]?.id
+export function resolveOrderListingId(fixedListingId?: string): string | undefined {
+  return fixedListingId
 }
 
 export function resolveDeliveryFee(
   provider: Pick<PublicServiceProvider, 'deliveryFee'>,
   listing?: ServiceListing | null,
 ): number {
+  if (listing?.deliveryFee != null && !Number.isNaN(listing.deliveryFee)) {
+    return listing.deliveryFee
+  }
   const listingMeta = listing?.metadata?.deliveryFee
   if (typeof listingMeta === 'number') return listingMeta
   if (typeof listingMeta === 'string') {
