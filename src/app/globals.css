@@ -87,16 +87,6 @@
   }
 }
 
-@keyframes hero-orbit-drift {
-  0%,
-  100% {
-    transform: rotateY(-4deg);
-  }
-  50% {
-    transform: rotateY(4deg);
-  }
-}
-
 @keyframes trust-marquee {
   0% {
     transform: translateX(0);
@@ -175,15 +165,26 @@ body {
   will-change: transform;
 }
 
-.animate-hero-orbit-drift {
-  animation: hero-orbit-drift 8s ease-in-out infinite;
+.hero-listings-marquee {
+  direction: ltr;
+}
+
+.hero-listings-track {
+  width: max-content;
+  animation: trust-marquee 28s linear infinite;
+  will-change: transform;
+}
+
+.hero-listings-marquee:hover .hero-listings-track,
+.hero-listings-marquee:focus-within .hero-listings-track {
+  animation-play-state: paused;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .animate-float,
   .animate-float-slow,
   .animate-float-delayed,
-  .animate-hero-orbit-drift,
+  .hero-listings-track,
   .hero-trust-track {
     animation: none;
   }

@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { HeroSection } from '@/components/home/hero-section'
+import { HomeSectionOrder } from '@/components/home/home-section-order'
 import { HomeServicesSections } from '@/components/home/home-services-sections'
 import { PropertyCard } from '@/components/property/property-card'
 import { Button } from '@/components/ui/button'
@@ -44,32 +45,37 @@ export default async function HomePage() {
         totalAvailable={latest.meta.total > 0 ? latest.meta.total : undefined}
       />
 
-      <HomeServicesSections />
+      <HomeSectionOrder
+        services={<HomeServicesSections />}
+        properties={
+          <>
+            <section className="container animate-slide-up px-4 py-12">
+              <div className="mb-6 flex items-center justify-between">
+                <h2 className="text-2xl font-bold text-slate-900">أحدث العقارات</h2>
+                <Button asChild variant="outline">
+                  <Link href="/properties">عرض الكل</Link>
+                </Button>
+              </div>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {latest.items.map((property) => (
+                  <PropertyCard key={property.id} property={property} />
+                ))}
+              </div>
+            </section>
 
-      <section className="container animate-slide-up px-4 py-12">
-        <div className="mb-6 flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-slate-900">أحدث العقارات</h2>
-          <Button asChild variant="outline">
-            <Link href="/properties">عرض الكل</Link>
-          </Button>
-        </div>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {latest.items.map((property) => (
-            <PropertyCard key={property.id} property={property} />
-          ))}
-        </div>
-      </section>
-
-      <section className="bg-slate-50 py-12">
-        <div className="container px-4">
-          <h2 className="mb-6 text-2xl font-bold text-slate-900">عقارات مميزة</h2>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {featured.items.map((property) => (
-              <PropertyCard key={property.id} property={property} />
-            ))}
-          </div>
-        </div>
-      </section>
+            <section className="bg-slate-50 py-12">
+              <div className="container px-4">
+                <h2 className="mb-6 text-2xl font-bold text-slate-900">عقارات مميزة</h2>
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                  {featured.items.map((property) => (
+                    <PropertyCard key={property.id} property={property} />
+                  ))}
+                </div>
+              </div>
+            </section>
+          </>
+        }
+      />
 
       <section className="container px-4 py-12">
         <h2 className="mb-6 text-2xl font-bold text-slate-900">مدن شائعة</h2>
