@@ -82,8 +82,6 @@ export function ServiceOrderableMenu({
     user?.role === 'CUSTOMER' &&
     permissions.includes(PERMISSIONS.SERVICE_ORDER_CREATE)
 
-  const canCheckout = cart.length > 0 && !!listingId
-
   function addItem(item: ServiceMenuItem) {
     if (!item.id) return
 
@@ -228,8 +226,6 @@ export function ServiceOrderableMenu({
               <p className="text-sm text-amber-700">
                 حسابك غير مفعّل لطلب الخدمات
               </p>
-            ) : !canCheckout ? (
-              <p className="text-sm text-amber-700">لا يوجد إعلان متاح للطلب</p>
             ) : (
               <Dialog open={open} onOpenChange={setOpen}>
                 <DialogTrigger asChild>
@@ -242,24 +238,23 @@ export function ServiceOrderableMenu({
                   <DialogHeader>
                     <DialogTitle>تأكيد الطلب</DialogTitle>
                   </DialogHeader>
-                  {listingId && (
-                    <ServiceOrderForm
-                      key={cart.map((c) => `${c.menuItemId}-${c.quantity}`).join('|')}
-                      providerId={providerId}
-                      listingId={listingId}
-                      deliveryFee={resolvedDeliveryFee}
-                      cart={cart}
-                      defaultDelivery={{
-                        city: location?.city,
-                        area: location?.area,
-                        address: location
-                          ? `${location.propertyTitle} — ${location.city} / ${location.area}`
-                          : undefined,
-                      }}
-                      isPending={createOrder.isPending}
-                      onSubmit={handleSubmit}
-                    />
-                  )}
+                  <ServiceOrderForm
+                    key={cart.map((c) => `${c.menuItemId}-${c.quantity}`).join('|')}
+                    providerId={providerId}
+                    listingId={listingId}
+                    deliveryFee={resolvedDeliveryFee}
+                    cart={cart}
+                    defaultPhone={user?.phone ?? undefined}
+                    defaultDelivery={{
+                      city: location?.city,
+                      area: location?.area,
+                      address: location
+                        ? `${location.propertyTitle} — ${location.city} / ${location.area}`
+                        : undefined,
+                    }}
+                    isPending={createOrder.isPending}
+                    onSubmit={handleSubmit}
+                  />
                 </DialogContent>
               </Dialog>
             )}

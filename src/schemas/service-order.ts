@@ -1,6 +1,7 @@
 import { z } from 'zod'
 
 export const serviceOrderDeliverySchema = z.object({
+  customerPhone: z.string().min(9, 'رقم الجوال غير صالح'),
   deliveryCity: z.string().min(1, 'المدينة مطلوبة'),
   deliveryArea: z.string().min(1, 'المنطقة مطلوبة'),
   deliveryAddress: z.string().min(3, 'عنوان التوصيل مطلوب'),
@@ -18,8 +19,9 @@ export const createServiceOrderItemSchema = z.object({
 
 export const createServiceOrderSchema = z.object({
   providerId: z.string().min(1, 'مزود الخدمة مطلوب'),
-  listingId: z.string().min(1, 'الإعلان مطلوب'),
+  listingId: z.string().min(1).optional(),
   items: z.array(createServiceOrderItemSchema).min(1, 'اختر عنصراً واحداً على الأقل'),
+  customerPhone: z.string().min(9, 'رقم الجوال غير صالح'),
   deliveryCity: z.string().min(1, 'المدينة مطلوبة'),
   deliveryArea: z.string().min(1, 'المنطقة مطلوبة'),
   deliveryAddress: z.string().min(3, 'عنوان التوصيل مطلوب'),

@@ -21,9 +21,10 @@ import {
 
 interface ServiceOrderFormProps {
   providerId: string
-  listingId: string
+  listingId?: string
   deliveryFee: number
   cart: ServiceOrderCartLine[]
+  defaultPhone?: string
   defaultDelivery?: {
     city?: string
     area?: string
@@ -38,6 +39,7 @@ export function ServiceOrderForm({
   listingId,
   deliveryFee,
   cart,
+  defaultPhone,
   defaultDelivery,
   isPending,
   onSubmit,
@@ -50,6 +52,7 @@ export function ServiceOrderForm({
   } = useForm<ServiceOrderDeliveryInput>({
     resolver: zodResolver(serviceOrderDeliverySchema),
     defaultValues: {
+      customerPhone: defaultPhone ?? '',
       deliveryCity: defaultDelivery?.city ?? '',
       deliveryArea: defaultDelivery?.area ?? '',
       deliveryAddress: defaultDelivery?.address ?? '',
@@ -63,12 +66,13 @@ export function ServiceOrderForm({
   async function handleFormSubmit(formData: ServiceOrderDeliveryInput) {
     const payload = {
       providerId,
-      listingId,
+      ...(listingId ? { listingId } : {}),
       items: cart.map(({ menuItemId, quantity, notes }) => ({
         menuItemId,
         quantity,
         ...(notes ? { notes } : {}),
       })),
+      customerPhone: formData.customerPhone,
       deliveryCity: formData.deliveryCity,
       deliveryArea: formData.deliveryArea,
       deliveryAddress: formData.deliveryAddress,
@@ -120,6 +124,21 @@ export function ServiceOrderForm({
             <span>{formatServicePrice(total)}</span>
           </div>
         </div>
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="customerPhone">رقم الجوال</Label>
+        <Input
+          id="customerPhone"
+          type="tel"
+          dir="ltr"
+          className="text-left"
+          placeholder="05xxxxxxxx"
+          {...register('customerPhone')}
+        />
+        {errors.customerPhone && (
+          <p className="text-sm text-red-600">{errors.customerPhone.message}</p>
+        )}
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2">

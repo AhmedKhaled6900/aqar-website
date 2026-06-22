@@ -381,8 +381,9 @@ export interface CreateServiceOrderItemInput {
 
 export interface CreateServiceOrderInput {
   providerId: string
-  listingId: string
+  listingId?: string
   items: CreateServiceOrderItemInput[]
+  customerPhone: string
   deliveryCity: string
   deliveryArea: string
   deliveryAddress: string
@@ -391,9 +392,10 @@ export interface CreateServiceOrderInput {
 
 export interface ServiceOrder {
   id: string
-  listingId: string
+  listingId?: string | null
   status: ServiceOrderStatus
   items: ServiceOrderItem[]
+  customerPhone?: string | null
   deliveryCity: string
   deliveryArea: string
   deliveryAddress: string
