@@ -3,12 +3,12 @@ import { HeroSection } from '@/components/home/hero-section'
 import { HomeServicesSections } from '@/components/home/home-services-sections'
 import { PropertyCard } from '@/components/property/property-card'
 import { Button } from '@/components/ui/button'
-import { fetchProperties, fetchCategorySelectMenu } from '@/lib/api/server'
+import { fetchProperties, fetchCategorySelectMenu, fetchFeaturedServiceListings } from '@/lib/api/server'
 import { DEFAULT_PROPERTY_PURPOSE } from '@/constants/features'
 import { POPULAR_CITIES } from '@/constants/cities'
 
 export default async function HomePage() {
-  const [latest, featured, categoriesData] = await Promise.all([
+  const [latest, featured, categoriesData, featuredListings] = await Promise.all([
     fetchProperties({ page: 1, limit: 6, purpose: DEFAULT_PROPERTY_PURPOSE }).catch(() => ({
       items: [],
       meta: {
@@ -32,6 +32,7 @@ export default async function HomePage() {
       },
     })),
     fetchCategorySelectMenu().catch(() => ({ items: [] })),
+    fetchFeaturedServiceListings().catch(() => []),
   ])
 
   const categories = categoriesData.items ?? []
@@ -39,7 +40,7 @@ export default async function HomePage() {
   return (
     <>
       <HeroSection
-        properties={featured.items.length > 0 ? featured.items : latest.items}
+        featuredListings={featuredListings}
         totalAvailable={latest.meta.total > 0 ? latest.meta.total : undefined}
       />
 

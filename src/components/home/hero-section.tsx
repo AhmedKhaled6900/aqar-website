@@ -1,10 +1,10 @@
 import Link from 'next/link'
 import { SearchBar } from '@/components/search/search-bar'
-import { FloatingPropertyCards } from '@/components/home/floating-property-cards'
+import { FeaturedListingsCarousel } from '@/components/home/featured-listings-carousel'
 import { APP_NAME } from '@/constants/branding'
 import { Button } from '@/components/ui/button'
 import { POPULAR_CITIES } from '@/constants/cities'
-import type { Property } from '@/lib/types'
+import type { FeaturedServiceListing } from '@/lib/types'
 import { Badge } from '../ui/badge'
 
 const TRUST_ITEMS = [
@@ -21,11 +21,11 @@ const TRUST_MARQUEE_ITEMS = Array.from({ length: TRUST_MARQUEE_COPIES }, () => [
 ]).flat()
 
 interface HeroSectionProps {
-  properties: Property[]
+  featuredListings: FeaturedServiceListing[]
   totalAvailable?: number
 }
 
-export function HeroSection({ properties, totalAvailable }: HeroSectionProps) {
+export function HeroSection({ featuredListings, totalAvailable }: HeroSectionProps) {
   return (
     <section className="relative overflow-x-clip bg-gradient-to-b from-primary-light via-white to-white pb-8 pt-8 sm:pb-10 sm:pt-10 md:pb-16 md:pt-14">
       {/* Decorative background */}
@@ -101,12 +101,12 @@ export function HeroSection({ properties, totalAvailable }: HeroSectionProps) {
             </div>
           </div>
 
-          {/* Floating cards — RTL end (left) */}
+          {/* Featured service listings carousel — RTL end (left) */}
           <div
             className="min-w-0 animate-fade-in xl:animate-slide-up"
             style={{ animationDelay: '0.15s' }}
           >
-            <FloatingPropertyCards properties={properties} />
+            <FeaturedListingsCarousel listings={featuredListings} />
           </div>
         </div>
       </div>

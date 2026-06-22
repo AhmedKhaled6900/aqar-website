@@ -1,5 +1,6 @@
 import type {
   Booking,
+  FeaturedServiceListing,
   PublicServiceProvider,
   ServiceCoverageArea,
   ServiceListing,
@@ -250,6 +251,85 @@ export function resolveDeliveryFee(
     return provider.deliveryFee
   }
   return 0
+}
+
+function normalizeFeaturedServiceListing(raw: unknown): FeaturedServiceListing | null {
+  if (!raw || typeof raw !== 'object') return null
+  const item = raw as Record<string, unknown>
+  const id = typeof item.id === 'string' ? item.id : null
+  const title = typeof item.title === 'string' ? item.title : null
+  if (!id || !title) return null
+
+  const providerRaw = item.provider
+  const provider =
+    providerRaw && typeof providerRaw === 'object'
+      ? (providerRaw as Record<string, unknown>)
+      : null
+
+  const providerId =
+    typeof item.providerId === 'string'
+      ? item.providerId
+      : provider && typeof provider.id === 'string'
+        ? provider.id
+        : null
+
+  if (!providerId) return null
+
+  const providerName =
+    provider && typeof provider.businessName === 'string'
+      ? provider.businessName
+      : typeof item.providerName === 'string'
+        ? item.providerName
+        : 'مقدم خدمة'
+
+  const imageUrl =
+    typeof item.imageUrl === 'string'
+      ? item.imageUrl
+      : typeof item.image === 'string'
+        ? item.image
+        : provider && typeof provider.logo === 'string'
+          ? provider.logo
+          : null
+
+  const category =
+    provider?.category && typeof provider.category === 'object'
+      ? (provider.category as Record<string, unknown>)
+      : null
+
+  const deliveryFeeRaw = item.deliveryFee
+  const deliveryFee =
+    typeof deliveryFeeRaw === 'number'
+      ? deliveryFeeRaw
+      : typeof deliveryFeeRaw === 'string'
+        ? Number(deliveryFeeRaw)
+        : null
+
+  return {
+    id,
+    title,
+    description: typeof item.description === 'string' ? item.description : null,
+    imageUrl,
+    deliveryFee:
+      deliveryFee != null && !Number.isNaN(deliveryFee) ? deliveryFee : null,
+    providerId,
+    providerName,
+    providerLogo:
+      provider && typeof provider.logo === 'string' ? provider.logo : null,
+    categoryName:
+      category && typeof category.name === 'string' ? category.name : undefined,
+  }
+}
+
+export function normalizeFeaturedServiceListings(raw: unknown): FeaturedServiceListing[] {
+  const list = Array.isArray(raw)
+    ? raw
+    : raw && typeof raw === 'object' && Array.isArray((raw as { items?: unknown }).items)
+      ? (raw as { items: unknown[] }).items
+      : []
+
+  return list
+    .map(normalizeFeaturedServiceListing)
+    .filter((item): item is FeaturedServiceListing => item !== null)
 }
 
 export function calculateServiceOrderSubtotal(

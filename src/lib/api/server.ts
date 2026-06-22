@@ -1,8 +1,9 @@
 import { API_URL } from '@/lib/api/config'
 import { normalizePaginatedResponse } from '@/lib/api/pagination'
-import { normalizePublicServiceProvider } from '@/utils/services'
+import { normalizePublicServiceProvider, normalizeFeaturedServiceListings } from '@/utils/services'
 import { buildPropertiesQueryParams, buildQueryString, buildServicesQueryParams } from '@/lib/utils'
 import type {
+  FeaturedServiceListing,
   PaginatedResponse,
   Property,
   PropertyFilters,
@@ -108,4 +109,9 @@ export async function fetchPublicProviderDetail(
 ): Promise<PublicServiceProvider> {
   const data = await serverFetch<PublicServiceProvider>(`/services/providers/${id}`)
   return normalizePublicServiceProvider(data)
+}
+
+export async function fetchFeaturedServiceListings(): Promise<FeaturedServiceListing[]> {
+  const data = await serverFetch<unknown>('/services/listings/featured')
+  return normalizeFeaturedServiceListings(data)
 }

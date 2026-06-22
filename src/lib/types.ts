@@ -326,6 +326,18 @@ export interface ServiceListing {
   menuItems?: ServiceMenuItem[]
 }
 
+export interface FeaturedServiceListing {
+  id: string
+  title: string
+  description?: string | null
+  imageUrl?: string | null
+  deliveryFee?: number | null
+  providerId: string
+  providerName: string
+  providerLogo?: string | null
+  categoryName?: string
+}
+
 export interface PublicServiceProvider {
   id: string
   businessName: string

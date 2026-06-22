@@ -87,6 +87,16 @@
   }
 }
 
+@keyframes hero-carousel-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
 @keyframes trust-marquee {
   0% {
     transform: translateX(0);
@@ -165,10 +175,15 @@ body {
   will-change: transform;
 }
 
+.animate-hero-carousel-float {
+  animation: hero-carousel-float 4.5s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-float,
   .animate-float-slow,
   .animate-float-delayed,
+  .animate-hero-carousel-float,
   .hero-trust-track {
     animation: none;
   }
