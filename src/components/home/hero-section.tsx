@@ -5,6 +5,7 @@ import { APP_NAME } from '@/constants/branding'
 import { Button } from '@/components/ui/button'
 import { POPULAR_CITIES } from '@/constants/cities'
 import type { FeaturedServiceListing } from '@/lib/types'
+import { cn } from '@/lib/utils'
 import { Badge } from '../ui/badge'
 
 const TRUST_ITEMS = [
@@ -43,7 +44,12 @@ export function HeroSection({ featuredListings, totalAvailable }: HeroSectionPro
       />
 
       <div className="container relative min-w-0 px-4">
-        <div className="grid min-w-0 items-center gap-8 xl:grid-cols-2 xl:gap-12">
+        <div
+          className={cn(
+            'grid min-w-0 items-center gap-8',
+            featuredListings.length > 0 && 'xl:grid-cols-2 xl:gap-12',
+          )}
+        >
           {/* Content — RTL start (right) */}
           <div className="min-w-0 animate-slide-up text-center xl:text-right">
             <Badge className="mb-4 max-w-full whitespace-normal border-primary/20 bg-white/80 px-3 py-1.5 text-xs leading-relaxed text-primary shadow-soft sm:text-sm">
@@ -101,13 +107,15 @@ export function HeroSection({ featuredListings, totalAvailable }: HeroSectionPro
             </div>
           </div>
 
-          {/* Featured service listings carousel — RTL end (left) */}
-          <div
-            className="min-w-0 animate-fade-in xl:animate-slide-up"
-            style={{ animationDelay: '0.15s' }}
-          >
-            <FeaturedListingsCarousel listings={featuredListings} />
-          </div>
+          {/* Featured service listings — RTL end (left) */}
+          {featuredListings.length > 0 && (
+            <div
+              className="min-w-0 animate-fade-in xl:animate-slide-up"
+              style={{ animationDelay: '0.15s' }}
+            >
+              <FeaturedListingsCarousel listings={featuredListings} />
+            </div>
+          )}
         </div>
       </div>
     </section>

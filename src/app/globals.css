@@ -87,13 +87,13 @@
   }
 }
 
-@keyframes hero-carousel-float {
+@keyframes hero-orbit-drift {
   0%,
   100% {
-    transform: translateY(0);
+    transform: rotateY(-4deg);
   }
   50% {
-    transform: translateY(-8px);
+    transform: rotateY(4deg);
   }
 }
 
@@ -175,15 +175,15 @@ body {
   will-change: transform;
 }
 
-.animate-hero-carousel-float {
-  animation: hero-carousel-float 4.5s ease-in-out infinite;
+.animate-hero-orbit-drift {
+  animation: hero-orbit-drift 8s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .animate-float,
   .animate-float-slow,
   .animate-float-delayed,
-  .animate-hero-carousel-float,
+  .animate-hero-orbit-drift,
   .hero-trust-track {
     animation: none;
   }
