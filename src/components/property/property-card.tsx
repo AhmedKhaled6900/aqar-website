@@ -1,5 +1,8 @@
+'use client'
+
 import Image from 'next/image'
-import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+import { Link } from '@/i18n/navigation'
 import { Bed, Bath, Maximize, MapPin } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
@@ -15,6 +18,9 @@ interface PropertyCardProps {
 }
 
 export function PropertyCard({ property, variant = 'grid' }: PropertyCardProps) {
+  const t = useTranslations('properties')
+  const tCommon = useTranslations('common')
+
   const primaryImage =
     property.images?.find((img) => img.isPrimary) ?? property.images?.[0]
   const imageUrl = primaryImage?.imageUrl ?? '/placeholder-property.svg'
@@ -37,16 +43,16 @@ export function PropertyCard({ property, variant = 'grid' }: PropertyCardProps) 
         <div className="absolute top-3 right-3 flex flex-wrap justify-end gap-2">
           {SALE_ENABLED ? (
             <Badge variant={property.purpose === 'SALE' ? 'sale' : 'rent'}>
-              {property.purpose === 'SALE' ? 'بيع' : 'إيجار'}
+              {property.purpose === 'SALE' ? tCommon('sale') : tCommon('rent')}
             </Badge>
           ) : (
-            <Badge variant="rent">إيجار</Badge>
+            <Badge variant="rent">{tCommon('rent')}</Badge>
           )}
           {property.purpose === 'RENT' && (
             <PropertyRentalStatusBadge property={property} size="sm" />
           )}
           {property.isNegotiable && property.status !== 'RENTED' && (
-            <Badge variant="secondary">قابل للتفاوض</Badge>
+            <Badge variant="secondary">{t('negotiable')}</Badge>
           )}
         </div>
         {property.status === 'RENTED' && (
@@ -85,7 +91,7 @@ export function PropertyCard({ property, variant = 'grid' }: PropertyCardProps) 
           {property.areaSize != null && (
             <span className="flex items-center gap-1">
               <Maximize className="h-4 w-4" />
-              {property.areaSize} م²
+              {property.areaSize} {tCommon('sqm')}
             </span>
           )}
         </div>

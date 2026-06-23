@@ -1,7 +1,8 @@
 'use client'
 
 import Image from 'next/image'
-import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+import { Link } from '@/i18n/navigation'
 import { Badge } from '@/components/ui/badge'
 import type { FeaturedServiceListing } from '@/lib/types'
 import { formatServicePrice } from '@/utils/services'
@@ -13,6 +14,7 @@ interface FeaturedListingsCarouselProps {
 }
 
 function ListingCard({ listing }: { listing: FeaturedServiceListing }) {
+  const t = useTranslations()
   const href = `/services/providers/${listing.providerId}/listings/${listing.id}`
   const image = listing.imageUrl ?? listing.providerLogo ?? '/placeholder-property.svg'
 
@@ -42,7 +44,7 @@ function ListingCard({ listing }: { listing: FeaturedServiceListing }) {
         <p className="mt-1 line-clamp-1 text-xs text-slate-500">{listing.providerName}</p>
         {listing.deliveryFee != null && listing.deliveryFee > 0 && (
           <p className="mt-1.5 text-xs font-semibold text-primary">
-            توصيل {formatServicePrice(listing.deliveryFee)}
+            {t('services.deliveryFee', { fee: formatServicePrice(listing.deliveryFee) })}
           </p>
         )}
       </div>
@@ -51,6 +53,7 @@ function ListingCard({ listing }: { listing: FeaturedServiceListing }) {
 }
 
 export function FeaturedListingsCarousel({ listings }: FeaturedListingsCarouselProps) {
+  const t = useTranslations()
   if (listings.length === 0) {
     return null
   }
@@ -59,12 +62,12 @@ export function FeaturedListingsCarousel({ listings }: FeaturedListingsCarouselP
 
   return (
     <div className="w-full min-w-0">
-      <p className="mb-3 text-center text-sm font-medium text-slate-500 xl:text-right">
-        إعلانات الخدمات المميزة
+      <p className="container mb-3 px-4 text-center text-sm font-medium text-slate-500">
+        {t('home.featuredListings')}
       </p>
 
-      <div className="hero-listings-marquee overflow-hidden rounded-2xl border border-slate-200/80 bg-white/70 py-4 shadow-soft">
-        <div className="hero-listings-track flex w-max items-stretch gap-4 px-1">
+      <div className="hero-listings-marquee w-full overflow-hidden border-y border-slate-200/80 bg-white/70 py-4 shadow-soft">
+        <div className="hero-listings-track flex w-max items-stretch gap-4">
           {marqueeItems.map((listing, index) => (
             <ListingCard
               key={`${listing.providerId}-${listing.id}-${index}`}

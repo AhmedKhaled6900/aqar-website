@@ -345,17 +345,22 @@ export function calculateServiceOrderTotal(
   return calculateServiceOrderSubtotal(items) + deliveryFee
 }
 
-export function getServiceOrderStatusLabel(status: string): string {
-  const labels: Record<string, string> = {
-    PENDING: 'قيد المراجعة',
-    ACCEPTED: 'مقبول',
-    CONFIRMED: 'مؤكد',
-    PREPARING: 'قيد التحضير',
-    READY: 'جاهز',
-    OUT_FOR_DELIVERY: 'في الطريق',
-    DELIVERED: 'تم التسليم',
-    CANCELLED: 'ملغي',
-    REJECTED: 'مرفوض',
-  }
-  return labels[status] ?? status
+const SERVICE_ORDER_STATUS_KEYS: Record<string, string> = {
+  PENDING: 'pending',
+  ACCEPTED: 'accepted',
+  CONFIRMED: 'confirmed',
+  PREPARING: 'preparing',
+  READY: 'ready',
+  OUT_FOR_DELIVERY: 'outForDelivery',
+  DELIVERED: 'delivered',
+  CANCELLED: 'cancelled',
+  REJECTED: 'rejected',
+}
+
+export function getServiceOrderStatusLabel(
+  status: string,
+  t: (key: string) => string,
+): string {
+  const key = SERVICE_ORDER_STATUS_KEYS[status]
+  return key ? t(key) : status
 }

@@ -1,6 +1,7 @@
 'use client'
 
-import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+import { Link } from '@/i18n/navigation'
 import { EmptyState } from '@/components/common/empty-state'
 import { ServiceProviderCard } from '@/components/services/service-provider-card'
 import { Button } from '@/components/ui/button'
@@ -13,14 +14,16 @@ interface ServicesCatalogProps {
 }
 
 export function ServicesCatalog({ initialData, filters }: ServicesCatalogProps) {
+  const t = useTranslations('services')
+  const tCommon = useTranslations('common')
   const { items, meta } = initialData
 
   if (items.length === 0) {
     return (
       <EmptyState
-        title="لا يوجد مقدمو خدمة"
-        description="جرّب تغيير الفلاتر أو البحث في منطقة أخرى"
-        actionLabel="عرض جميع الخدمات"
+        title={t('noProviders')}
+        description={t('emptyDescription')}
+        actionLabel={t('viewAllServices')}
         actionHref="/services"
       />
     )
@@ -28,7 +31,7 @@ export function ServicesCatalog({ initialData, filters }: ServicesCatalogProps) 
 
   return (
     <div className="space-y-6">
-      <p className="text-sm text-slate-500">{meta.total} مقدم خدمة</p>
+      <p className="text-sm text-slate-500">{t('providersCount', { count: meta.total })}</p>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {items.map((provider) => (
@@ -50,12 +53,12 @@ export function ServicesCatalog({ initialData, filters }: ServicesCatalogProps) 
                   query: buildServicesPageQuery(filters, meta.page - 1),
                 }}
               >
-                السابق
+                {tCommon('previous')}
               </Link>
             </Button>
           )}
           <span className="flex items-center px-4 text-sm text-slate-600">
-            صفحة {meta.page} من {meta.totalPages}
+            {tCommon('pageOf', { page: meta.page, totalPages: meta.totalPages })}
           </span>
           {meta.hasNextPage && (
             <Button asChild variant="outline">
@@ -65,7 +68,7 @@ export function ServicesCatalog({ initialData, filters }: ServicesCatalogProps) 
                   query: buildServicesPageQuery(filters, meta.page + 1),
                 }}
               >
-                التالي
+                {tCommon('next')}
               </Link>
             </Button>
           )}

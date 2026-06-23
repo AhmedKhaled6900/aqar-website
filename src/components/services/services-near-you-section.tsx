@@ -1,6 +1,7 @@
 'use client'
 
-import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+import { Link } from '@/i18n/navigation'
 import { Button } from '@/components/ui/button'
 import { EmptyState } from '@/components/common/empty-state'
 import { ServiceProviderCard } from '@/components/services/service-provider-card'
@@ -13,6 +14,7 @@ interface ServicesNearYouSectionProps {
 }
 
 export function ServicesNearYouSection({ location }: ServicesNearYouSectionProps) {
+  const t = useTranslations('services')
   const { data, isLoading } = usePublicProviders({
     city: location.city,
     area: location.area,
@@ -33,16 +35,18 @@ export function ServicesNearYouSection({ location }: ServicesNearYouSectionProps
       <div className="container px-4">
         <div className="mb-2 flex flex-wrap items-end justify-between gap-4">
           <div>
-            <h2 className="text-2xl font-bold text-slate-900">خدمات بالقرب منك</h2>
-            <p className="mt-1 text-sm text-slate-600">
-              مقدمو خدمة في منطقة إقامتك
-            </p>
+            <h2 className="text-2xl font-bold text-slate-900">{t('nearYou')}</h2>
+            <p className="mt-1 text-sm text-slate-600">{t('nearYouDesc')}</p>
             <p className="mt-2 text-sm font-medium text-primary">
-              أنت في: {location.propertyTitle} — {location.city} / {location.area}
+              {t('youAreAt', {
+                title: location.propertyTitle,
+                city: location.city,
+                area: location.area,
+              })}
             </p>
           </div>
           <Button asChild variant="outline">
-            <Link href={viewAllHref}>عرض الكل</Link>
+            <Link href={viewAllHref}>{t('viewAll')}</Link>
           </Button>
         </div>
 
@@ -55,9 +59,9 @@ export function ServicesNearYouSection({ location }: ServicesNearYouSectionProps
         ) : items.length === 0 ? (
           <div className="mt-6">
             <EmptyState
-              title="لا يوجد مقدمو خدمة في منطقتك حالياً"
-              description="يمكنك تصفح جميع مقدمي الخدمة في المنصة"
-              actionLabel="اكتشف الخدمات"
+              title={t('noProvidersNearby')}
+              description={t('browseAllProvidersDesc')}
+              actionLabel={t('discover')}
               actionHref="/services"
             />
           </div>

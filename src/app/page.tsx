@@ -1,4 +1,5 @@
-import Link from 'next/link'
+import { getTranslations } from 'next-intl/server'
+import { Link } from '@/i18n/navigation'
 import { HeroSection } from '@/components/home/hero-section'
 import { HomeSectionOrder } from '@/components/home/home-section-order'
 import { HomeServicesSections } from '@/components/home/home-services-sections'
@@ -9,6 +10,8 @@ import { DEFAULT_PROPERTY_PURPOSE } from '@/constants/features'
 import { POPULAR_CITIES } from '@/constants/cities'
 
 export default async function HomePage() {
+  const t = await getTranslations()
+
   const [latest, featured, categoriesData, featuredListings] = await Promise.all([
     fetchProperties({ page: 1, limit: 6, purpose: DEFAULT_PROPERTY_PURPOSE }).catch(() => ({
       items: [],
@@ -38,6 +41,12 @@ export default async function HomePage() {
 
   const categories = categoriesData.items ?? []
 
+  const whyUsItems = [
+    { title: t('home.whyTrustedTitle'), desc: t('home.whyTrustedDesc') },
+    { title: t('home.whySearchTitle'), desc: t('home.whySearchDesc') },
+    { title: t('home.whySupportTitle'), desc: t('home.whySupportDesc') },
+  ]
+
   return (
     <>
       <HeroSection
@@ -51,9 +60,9 @@ export default async function HomePage() {
           <>
             <section className="container animate-slide-up px-4 py-12">
               <div className="mb-6 flex items-center justify-between">
-                <h2 className="text-2xl font-bold text-slate-900">أحدث العقارات</h2>
+                <h2 className="text-2xl font-bold text-slate-900">{t('home.latest')}</h2>
                 <Button asChild variant="outline">
-                  <Link href="/properties">عرض الكل</Link>
+                  <Link href="/properties">{t('common.viewAll')}</Link>
                 </Button>
               </div>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -65,7 +74,7 @@ export default async function HomePage() {
 
             <section className="bg-slate-50 py-12">
               <div className="container px-4">
-                <h2 className="mb-6 text-2xl font-bold text-slate-900">عقارات مميزة</h2>
+                <h2 className="mb-6 text-2xl font-bold text-slate-900">{t('home.featured')}</h2>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                   {featured.items.map((property) => (
                     <PropertyCard key={property.id} property={property} />
@@ -78,7 +87,7 @@ export default async function HomePage() {
       />
 
       <section className="container px-4 py-12">
-        <h2 className="mb-6 text-2xl font-bold text-slate-900">مدن شائعة</h2>
+        <h2 className="mb-6 text-2xl font-bold text-slate-900">{t('home.popularCities')}</h2>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5">
           {POPULAR_CITIES.map((city) => (
             <Link
@@ -95,9 +104,7 @@ export default async function HomePage() {
       {categories.length > 0 && (
         <section className="bg-slate-50 py-12">
           <div className="container px-4">
-            <h2 className="mb-6 text-2xl font-bold text-slate-900">
-              تصنيفات العقارات
-            </h2>
+            <h2 className="mb-6 text-2xl font-bold text-slate-900">{t('home.categories')}</h2>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
               {categories.map((cat) => (
                 <Link
@@ -114,15 +121,9 @@ export default async function HomePage() {
       )}
 
       <section className="container px-4 py-12">
-        <h2 className="mb-6 text-center text-2xl font-bold text-slate-900">
-          لماذا تختارنا
-        </h2>
+        <h2 className="mb-6 text-center text-2xl font-bold text-slate-900">{t('home.whyUs')}</h2>
         <div className="grid gap-6 md:grid-cols-3">
-          {[
-            { title: 'عقارات موثوقة', desc: 'جميع العقارات معتمدة ومراجعّة' },
-            { title: 'بحث ذكي', desc: 'فلاتر متقدمة للوصول لعقارك بسرعة' },
-            { title: 'دعم مستمر', desc: 'فريق دعم جاهز لمساعدتك' },
-          ].map((item) => (
+          {whyUsItems.map((item) => (
             <div
               key={item.title}
               className="rounded-xl border border-slate-200 p-6 text-center"

@@ -1,5 +1,8 @@
+'use client'
+
 import Image from 'next/image'
-import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+import { Link } from '@/i18n/navigation'
 import { ShoppingBag } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -28,12 +31,14 @@ export function ServiceListingsSection({
   canOrder = false,
   highlightListingId,
 }: ServiceListingsSectionProps) {
+  const t = useTranslations()
+  const tServices = useTranslations('services')
   const visibleListings = getProviderListings(listings)
 
   if (visibleListings.length === 0) {
     return (
       <p className="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center text-slate-500">
-        لا توجد إعلانات حالياً
+        {tServices('noListings')}
       </p>
     )
   }
@@ -72,15 +77,15 @@ export function ServiceListingsSection({
             )}
             <CardHeader className="pb-2">
               <div className="flex flex-wrap items-center gap-2">
-                <p className="text-xs font-medium text-primary">إعلان</p>
+                <p className="text-xs font-medium text-primary">{t('common.listing')}</p>
                 {listingHasMenu && (
                   <Badge variant="secondary" className="text-xs">
-                    {listingMenu.length} صنف
+                    {t('common.itemsCount', { count: listingMenu.length })}
                   </Badge>
                 )}
                 {deliveryFee > 0 && (
                   <Badge variant="outline" className="text-xs">
-                    توصيل {formatServicePrice(deliveryFee)}
+                    {tServices('deliveryFee', { fee: formatServicePrice(deliveryFee) })}
                   </Badge>
                 )}
               </div>
@@ -94,20 +99,20 @@ export function ServiceListingsSection({
                 <Button asChild size="sm" className="gap-1.5">
                   <Link href={href}>
                     <ShoppingBag className="h-3.5 w-3.5" />
-                    {isHighlighted ? 'أنت تشاهد هذا الإعلان' : 'اطلب من الإعلان'}
+                    {isHighlighted ? tServices('viewingListing') : tServices('orderFromListingBtn')}
                   </Link>
                 </Button>
               )}
               {!canOrder && (
                 <Button asChild variant={isHighlighted ? 'default' : 'outline'} size="sm">
                   <Link href={href}>
-                    {isHighlighted ? 'أنت تشاهد هذا الإعلان' : 'عرض الإعلان'}
+                    {isHighlighted ? tServices('viewingListing') : tServices('viewListing')}
                   </Link>
                 </Button>
               )}
               {canOrder && !isHighlighted && (
                 <Button asChild variant="outline" size="sm">
-                  <Link href={href}>عرض التفاصيل</Link>
+                  <Link href={href}>{t('common.details')}</Link>
                 </Button>
               )}
             </CardContent>

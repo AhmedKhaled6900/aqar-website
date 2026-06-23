@@ -1,6 +1,7 @@
 'use client'
 
-import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+import { Link } from '@/i18n/navigation'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -15,6 +16,8 @@ import { API_URL } from '@/lib/api/config'
 import { useAuthStore } from '@/store/auth-store'
 
 export function LoginForm() {
+  const t = useTranslations('auth')
+  const tCommon = useTranslations('common')
   const router = useRouter()
   const searchParams = useSearchParams()
   const redirect = searchParams.get('redirect') ?? '/'
@@ -48,43 +51,43 @@ export function LoginForm() {
     <div className="container flex min-h-[70vh] items-center justify-center px-4 py-12">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle className="text-center text-2xl">تسجيل الدخول</CardTitle>
+          <CardTitle className="text-center text-2xl">{t('loginTitle')}</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">البريد الإلكتروني</Label>
+              <Label htmlFor="email">{t('email')}</Label>
               <Input id="email" type="email" {...register('email')} />
               {errors.email && (
                 <p className="text-sm text-red-600">{errors.email.message}</p>
               )}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">كلمة المرور</Label>
+              <Label htmlFor="password">{t('password')}</Label>
               <Input id="password" type="password" {...register('password')} />
               {errors.password && (
                 <p className="text-sm text-red-600">{errors.password.message}</p>
               )}
             </div>
             <Button type="submit" className="w-full" disabled={login.isPending}>
-              {login.isPending ? 'جاري الدخول...' : 'دخول'}
+              {login.isPending ? t('loggingIn') : tCommon('login')}
             </Button>
           </form>
 
           <div className="mt-4 text-center text-sm">
             <Link href="/auth/forgot-password" className="text-primary hover:underline">
-              نسيت كلمة المرور؟
+              {t('forgotPassword')}
             </Link>
           </div>
 
           <Button asChild variant="outline" className="mt-4 w-full">
-            <a href={`${API_URL}/auth/google`}>تسجيل الدخول بـ Google</a>
+            <a href={`${API_URL}/auth/google`}>{t('googleLogin')}</a>
           </Button>
 
           <p className="mt-4 text-center text-sm text-slate-600">
-            ليس لديك حساب؟{' '}
+            {t('noAccount')}{' '}
             <Link href="/auth/register" className="text-primary hover:underline">
-              إنشاء حساب
+              {t('createAccount')}
             </Link>
           </p>
         </CardContent>

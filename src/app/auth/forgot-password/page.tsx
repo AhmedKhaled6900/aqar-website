@@ -1,6 +1,7 @@
 'use client'
 
-import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+import { Link } from '@/i18n/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '@/components/ui/button'
@@ -14,6 +15,8 @@ import { z } from 'zod'
 type ForgotInput = z.infer<typeof forgotPasswordSchema>
 
 export default function ForgotPasswordPage() {
+  const t = useTranslations('auth')
+  const tCommon = useTranslations('common')
   const forgotPassword = useForgotPassword()
 
   const {
@@ -36,30 +39,28 @@ export default function ForgotPasswordPage() {
     <div className="container flex min-h-[70vh] items-center justify-center px-4 py-12">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle className="text-center text-2xl">استعادة كلمة المرور</CardTitle>
+          <CardTitle className="text-center text-2xl">{t('forgotTitle')}</CardTitle>
         </CardHeader>
         <CardContent>
           {isSubmitSuccessful ? (
-            <p className="text-center text-sm text-primary">
-              تم إرسال رمز الاستعادة إلى بريدك الإلكتروني.
-            </p>
+            <p className="text-center text-sm text-primary">{t('forgotSuccess')}</p>
           ) : (
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email">البريد الإلكتروني</Label>
+                <Label htmlFor="email">{t('email')}</Label>
                 <Input id="email" type="email" {...register('email')} />
                 {errors.email && (
                   <p className="text-sm text-red-600">{errors.email.message}</p>
                 )}
               </div>
               <Button type="submit" className="w-full" disabled={forgotPassword.isPending}>
-                {forgotPassword.isPending ? 'جاري الإرسال...' : 'إرسال'}
+                {forgotPassword.isPending ? t('sending') : tCommon('submit')}
               </Button>
             </form>
           )}
           <p className="mt-4 text-center text-sm">
             <Link href="/auth/login" className="text-primary hover:underline">
-              العودة لتسجيل الدخول
+              {t('backToLogin')}
             </Link>
           </p>
         </CardContent>

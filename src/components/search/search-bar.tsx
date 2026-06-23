@@ -1,6 +1,7 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
+import { useRouter } from '@/i18n/navigation'
+import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 import { Search } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -30,6 +31,7 @@ interface SearchBarProps {
 }
 
 export function SearchBar({ compact, variant = 'default', defaultValues }: SearchBarProps) {
+  const t = useTranslations()
   const isHero = variant === 'hero'
   const router = useRouter()
   const { data: categories = [] } = useCategorySelectMenu()
@@ -75,7 +77,7 @@ export function SearchBar({ compact, variant = 'default', defaultValues }: Searc
       <div className={fieldGridClass}>
         <Select value={city} onValueChange={setCity}>
           <SelectTrigger className="overflow-hidden whitespace-nowrap">
-            <SelectValue placeholder="المدينة" className="truncate" />
+            <SelectValue placeholder={t('search.cityPlaceholder')} className="truncate" />
           </SelectTrigger>
           <SelectContent>
             {POPULAR_CITIES.map((c) => (
@@ -92,18 +94,18 @@ export function SearchBar({ compact, variant = 'default', defaultValues }: Searc
             onValueChange={(v) => setPurpose(v as PropertyPurpose)}
           >
             <SelectTrigger className="overflow-hidden whitespace-nowrap">
-              <SelectValue placeholder="حالة العقار" className="truncate" />
+              <SelectValue placeholder={t('search.purposePlaceholder')} className="truncate" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="SALE">بيع</SelectItem>
-              <SelectItem value="RENT">إيجار</SelectItem>
+              <SelectItem value="SALE">{t('common.sale')}</SelectItem>
+              <SelectItem value="RENT">{t('common.rent')}</SelectItem>
             </SelectContent>
           </Select>
         )}
 
         <Select value={parentCategoryId} onValueChange={setParentCategoryId}>
           <SelectTrigger className="overflow-hidden whitespace-nowrap">
-            <SelectValue placeholder="التصنيف" className="truncate" />
+            <SelectValue placeholder={t('search.categoryPlaceholder')} className="truncate" />
           </SelectTrigger>
           <SelectContent>
             {categories.map((cat) => (
@@ -120,12 +122,12 @@ export function SearchBar({ compact, variant = 'default', defaultValues }: Searc
             onValueChange={(v) => setPricePeriod(v as PricePeriod)}
           >
             <SelectTrigger className="overflow-hidden whitespace-nowrap">
-              <SelectValue placeholder="فترة السعر" className="truncate" />
+              <SelectValue placeholder={t('search.pricePeriodPlaceholder')} className="truncate" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="DAY">يومي</SelectItem>
-              <SelectItem value="MONTH">شهري</SelectItem>
-              <SelectItem value="YEAR">سنوي</SelectItem>
+              <SelectItem value="DAY">{t('common.day')}</SelectItem>
+              <SelectItem value="MONTH">{t('common.month')}</SelectItem>
+              <SelectItem value="YEAR">{t('common.year')}</SelectItem>
             </SelectContent>
           </Select>
         )}
@@ -133,7 +135,7 @@ export function SearchBar({ compact, variant = 'default', defaultValues }: Searc
 
       <Button onClick={handleSearch} className={buttonClass}>
         <Search className="h-4 w-4" />
-        بحث
+        {t('common.search')}
       </Button>
     </div>
   )

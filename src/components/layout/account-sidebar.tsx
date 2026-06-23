@@ -1,7 +1,7 @@
 'use client'
 
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { useTranslations } from 'next-intl'
+import { Link, usePathname } from '@/i18n/navigation'
 import {
   Calendar,
   Heart,
@@ -14,19 +14,20 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
-const items = [
-  { href: '/account/profile', label: 'الملف الشخصي', icon: User },
-  { href: '/account/favorites', label: 'المفضلة', icon: Heart },
-  { href: '/account/cart', label: 'السلة', icon: ShoppingCart },
-  { href: '/account/offers', label: 'عروض الأسعار', icon: Tag },
-  { href: '/account/reviews', label: 'تقييماتي', icon: Star },
-  { href: '/account/comments', label: 'تعليقاتي', icon: MessageSquare },
-  { href: '/account/bookings', label: 'إيجاراتي', icon: Calendar },
-  { href: '/account/service-orders', label: 'طلبات الخدمات', icon: ShoppingBag },
-]
-
 export function AccountSidebar() {
+  const t = useTranslations()
   const pathname = usePathname()
+
+  const items = [
+    { href: '/account/profile', label: t('account.profileTitle'), icon: User },
+    { href: '/account/favorites', label: t('common.favorites'), icon: Heart },
+    { href: '/account/cart', label: t('common.cart'), icon: ShoppingCart },
+    { href: '/account/offers', label: t('common.offers'), icon: Tag },
+    { href: '/account/reviews', label: t('account.myReviews'), icon: Star },
+    { href: '/account/comments', label: t('account.myComments'), icon: MessageSquare },
+    { href: '/account/bookings', label: t('account.myRentals'), icon: Calendar },
+    { href: '/account/service-orders', label: t('account.myServiceOrders'), icon: ShoppingBag },
+  ] as const
 
   return (
     <aside className="space-y-1">

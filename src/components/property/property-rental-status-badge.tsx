@@ -1,3 +1,6 @@
+'use client'
+
+import { useTranslations } from 'next-intl'
 import { Badge } from '@/components/ui/badge'
 import type { Property } from '@/lib/types'
 import { cn } from '@/lib/utils'
@@ -13,6 +16,8 @@ export function PropertyRentalStatusBadge({
   className,
   size = 'md',
 }: PropertyRentalStatusBadgeProps) {
+  const t = useTranslations('properties')
+
   if (property.purpose !== 'RENT') return null
 
   const isRented = property.status === 'RENTED'
@@ -28,7 +33,7 @@ export function PropertyRentalStatusBadge({
         className,
       )}
     >
-      {isRented ? 'مؤجرة' : 'متاحة للإيجار'}
+      {isRented ? t('rentedOut') : t('availableForRent')}
     </Badge>
   )
 }

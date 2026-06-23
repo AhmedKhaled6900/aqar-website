@@ -1,10 +1,12 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
 import { EmptyState } from '@/components/common/empty-state'
 import { ServiceOrderCard } from '@/components/services/service-order-card'
 import { useMyServiceOrders } from '@/features/services/useServiceOrders'
 
 export default function ServiceOrdersPage() {
+  const t = useTranslations('account')
   const { data, isLoading } = useMyServiceOrders()
 
   if (isLoading) {
@@ -16,9 +18,9 @@ export default function ServiceOrdersPage() {
   if (items.length === 0) {
     return (
       <EmptyState
-        title="لا توجد طلبات"
-        description="اطلب من مطاعم وكافيهات مقدمي الخدمة المعتمدين"
-        actionLabel="تصفح الخدمات"
+        title={t('noOrders')}
+        description={t('noOrdersDesc')}
+        actionLabel={t('browseServices')}
         actionHref="/services"
       />
     )
@@ -27,7 +29,7 @@ export default function ServiceOrdersPage() {
   return (
     <div className="space-y-4">
       <p className="text-sm text-slate-500">
-        {data?.meta.total ?? items.length} طلب — تابع حالة طلباتك أدناه
+        {t('ordersCountHint', { count: data?.meta.total ?? items.length })}
       </p>
       {items.map((order) => (
         <ServiceOrderCard key={order.id} order={order} />

@@ -1,6 +1,8 @@
 'use client'
 
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from '@/i18n/navigation'
+import { useSearchParams } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
@@ -27,6 +29,8 @@ import { parseAttributeFiltersFromSearchParams } from '@/lib/utils'
 import type { PricePeriod, PropertyPurpose } from '@/lib/types'
 
 export function PropertyFilters() {
+  const t = useTranslations('properties')
+  const tCommon = useTranslations('common')
   const router = useRouter()
   const searchParams = useSearchParams()
 
@@ -98,16 +102,16 @@ export function PropertyFilters() {
   return (
     <aside className="rounded-xl border border-slate-200/80 bg-white p-4 shadow-soft">
       <div className="mb-2 flex items-center justify-between">
-        <h2 className="font-semibold text-slate-900">الفلاتر</h2>
+        <h2 className="font-semibold text-slate-900">{t('filters')}</h2>
       </div>
 
       <Accordion defaultValue={['location', 'type', 'category']} className="border-t border-slate-200">
-        <AccordionItem value="location" title="الموقع">
+        <AccordionItem value="location" title={t('location')}>
           <div className="space-y-2">
-            <Label>المدينة</Label>
+            <Label>{tCommon('city')}</Label>
             <Select value={city} onValueChange={setCity}>
               <SelectTrigger>
-                <SelectValue placeholder="اختر المدينة" />
+                <SelectValue placeholder={tCommon('selectCity')} />
               </SelectTrigger>
               <SelectContent>
                 {POPULAR_CITIES.map((c) => (
@@ -120,21 +124,24 @@ export function PropertyFilters() {
           </div>
         </AccordionItem>
 
-        <AccordionItem value="type" title={SALE_ENABLED ? 'نوع العرض' : 'فترة الإيجار'}>
+        <AccordionItem
+          value="type"
+          title={SALE_ENABLED ? t('listingType') : t('rentPeriod')}
+        >
           <div className="space-y-4">
             {SALE_ENABLED && (
               <div className="space-y-2">
-                <Label>الغرض</Label>
+                <Label>{t('purpose')}</Label>
                 <Select
                   value={purpose}
                   onValueChange={(v) => setPurpose(v as PropertyPurpose)}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="بيع / إيجار" />
+                    <SelectValue placeholder={t('purposePlaceholder')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="SALE">بيع</SelectItem>
-                    <SelectItem value="RENT">إيجار</SelectItem>
+                    <SelectItem value="SALE">{tCommon('sale')}</SelectItem>
+                    <SelectItem value="RENT">{tCommon('rent')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -142,18 +149,18 @@ export function PropertyFilters() {
 
             {(SALE_ENABLED ? purpose === 'RENT' : true) && (
               <div className="space-y-2">
-                <Label>فترة السعر</Label>
+                <Label>{tCommon('pricePeriod')}</Label>
                 <Select
                   value={pricePeriod}
                   onValueChange={(v) => setPricePeriod(v as PricePeriod)}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="الفترة" />
+                    <SelectValue placeholder={t('pricePeriodPlaceholder')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="DAY">يومي</SelectItem>
-                    <SelectItem value="MONTH">شهري</SelectItem>
-                    <SelectItem value="YEAR">سنوي</SelectItem>
+                    <SelectItem value="DAY">{tCommon('day')}</SelectItem>
+                    <SelectItem value="MONTH">{tCommon('month')}</SelectItem>
+                    <SelectItem value="YEAR">{tCommon('year')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -161,10 +168,10 @@ export function PropertyFilters() {
           </div>
         </AccordionItem>
 
-        <AccordionItem value="category" title="التصنيف">
+        <AccordionItem value="category" title={tCommon('category')}>
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label>التصنيف الرئيسي</Label>
+              <Label>{t('parentCategory')}</Label>
               <Select
                 value={parentCategoryId}
                 onValueChange={(v) => {
@@ -174,7 +181,7 @@ export function PropertyFilters() {
                 }}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="التصنيف" />
+                  <SelectValue placeholder={t('categoryPlaceholder')} />
                 </SelectTrigger>
                 <SelectContent>
                   {categories.map((cat) => (
@@ -188,10 +195,10 @@ export function PropertyFilters() {
 
             {parentCategoryId && subcategories.length > 0 && (
               <div className="space-y-2">
-                <Label>التصنيف الفرعي</Label>
+                <Label>{tCommon('subcategory')}</Label>
                 <Select value={subcategoryId} onValueChange={setSubcategoryId}>
                   <SelectTrigger>
-                    <SelectValue placeholder="اختياري" />
+                    <SelectValue placeholder={tCommon('optional')} />
                   </SelectTrigger>
                   <SelectContent>
                     {subcategories.map((sub) => (
@@ -207,7 +214,7 @@ export function PropertyFilters() {
         </AccordionItem>
 
         {hasAttributeFilters && (
-          <AccordionItem value="attributes" title="خصائص العقار">
+          <AccordionItem value="attributes" title={t('propertyAttributes')}>
             <div className="space-y-4">
               {attributeItems.map((attr) => (
                 <AttributeFilterField
@@ -229,10 +236,10 @@ export function PropertyFilters() {
 
       <div className="mt-4 flex gap-2 border-t border-slate-200 pt-4">
         <Button onClick={applyFilters} className="flex-1">
-          تطبيق
+          {tCommon('apply')}
         </Button>
         <Button variant="outline" onClick={clearFilters}>
-          مسح
+          {tCommon('clear')}
         </Button>
       </div>
     </aside>

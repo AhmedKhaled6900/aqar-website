@@ -1,8 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
+import { useTranslations } from 'next-intl'
+import { Link, usePathname, useRouter } from '@/i18n/navigation'
 import { Minus, Plus, ShoppingBag } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
@@ -44,6 +44,8 @@ export function ServiceOrderableMenu({
   activeListing,
   providerDeliveryFee,
 }: ServiceOrderableMenuProps) {
+  const t = useTranslations()
+  const tServices = useTranslations('services')
   const router = useRouter()
   const pathname = usePathname()
   const user = useAuthStore((s) => s.user)
@@ -126,7 +128,7 @@ export function ServiceOrderableMenu({
   if (menuItems.length === 0) {
     return (
       <p className="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center text-slate-500">
-        لا توجد عناصر في المنيو حالياً
+        {tServices('noMenuItems')}
       </p>
     )
   }
@@ -153,7 +155,7 @@ export function ServiceOrderableMenu({
                     </p>
                     {item.prepTimeMinutes != null && item.prepTimeMinutes > 0 && (
                       <span className="text-xs text-slate-400">
-                        ~{item.prepTimeMinutes} د
+                        {tServices('prepTime', { minutes: item.prepTimeMinutes })}
                       </span>
                     )}
                   </div>
@@ -167,7 +169,7 @@ export function ServiceOrderableMenu({
                         size="icon"
                         className="h-8 w-8"
                         onClick={() => updateQuantity(item, -1)}
-                        aria-label={`تقليل ${item.name}`}
+                        aria-label={tServices('decreaseItem', { name: item.name })}
                       >
                         <Minus className="h-4 w-4" />
                       </Button>
@@ -181,7 +183,11 @@ export function ServiceOrderableMenu({
                     variant={quantity > 0 ? 'default' : 'outline'}
                     size="icon"
                     className="h-8 w-8"
-                    aria-label={`إضافة ${item.name}`}
+                    aria-label={
+                      quantity > 0
+                        ? tServices('increaseItem', { name: item.name })
+                        : tServices('addItem', { name: item.name })
+                    }
                     onClick={() =>
                       quantity > 0 ? updateQuantity(item, 1) : addItem(item)
                     }
@@ -200,31 +206,32 @@ export function ServiceOrderableMenu({
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <p className="text-sm text-slate-500">
-                {cartItemCount} صنف · شامل التوصيل {formatServicePrice(orderTotal)}
+                {t('common.itemsCount', { count: cartItemCount })} ·{' '}
+                {t('common.includingDelivery', { total: formatServicePrice(orderTotal) })}
               </p>
             </div>
 
             {!user ? (
               <Button asChild>
                 <Link href={`/auth/login?redirect=${encodeURIComponent(pathname)}`}>
-                  سجّل الدخول للطلب
+                  {tServices('loginToOrder')}
                 </Link>
               </Button>
             ) : !canCreateOrder ? (
               <p className="text-sm text-amber-700">
-                حسابك غير مفعّل لطلب الخدمات
+                {tServices('accountNotEnabled')}
               </p>
             ) : (
               <Dialog open={open} onOpenChange={setOpen}>
                 <DialogTrigger asChild>
                   <Button className="gap-2">
                     <ShoppingBag className="h-4 w-4" />
-                    إتمام الطلب
+                    {tServices('placeOrder')}
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="max-h-[90vh] overflow-y-auto">
                   <DialogHeader>
-                    <DialogTitle>تأكيد الطلب</DialogTitle>
+                    <DialogTitle>{tServices('confirmOrderTitle')}</DialogTitle>
                   </DialogHeader>
                   <ServiceOrderForm
                     key={cart.map((c) => `${c.menuItemId}-${c.quantity}`).join('|')}

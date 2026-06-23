@@ -1,5 +1,6 @@
 import { Suspense } from 'react'
 import type { Metadata } from 'next'
+import { getTranslations } from 'next-intl/server'
 import { PropertyFilters } from '@/components/property/property-filters'
 import { PropertiesCatalog } from '@/components/property/properties-catalog'
 import { PropertyGridSkeleton } from '@/components/common/skeletons'
@@ -8,9 +9,12 @@ import { resolvePropertyPurposeFilter } from '@/constants/features'
 import { parseAttributeFiltersFromSearchParams } from '@/lib/utils'
 import type { PropertyFilters as Filters } from '@/lib/types'
 
-export const metadata: Metadata = {
-  title: 'العقارات',
-  description: 'تصفح العقارات المعتمدة للإيجار في السعودية',
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations('properties')
+  return {
+    title: t('title'),
+    description: t('metaDescription'),
+  }
 }
 
 interface PageProps {
@@ -18,6 +22,7 @@ interface PageProps {
 }
 
 export default async function PropertiesPage({ searchParams }: PageProps) {
+  const t = await getTranslations('properties')
   const params = await searchParams
   const attributeFilters = parseAttributeFiltersFromSearchParams(params)
   const filters: Filters = {
@@ -56,7 +61,7 @@ export default async function PropertiesPage({ searchParams }: PageProps) {
 
   return (
     <div className="container px-4 py-8">
-      <h1 className="mb-6 text-3xl font-bold text-slate-900">العقارات</h1>
+      <h1 className="mb-6 text-3xl font-bold text-slate-900">{t('title')}</h1>
       <div className="grid gap-6 lg:grid-cols-[280px_1fr]">
         <Suspense fallback={<div className="h-96 animate-pulse rounded-xl bg-slate-100" />}>
           <PropertyFilters />

@@ -2,6 +2,7 @@
 
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -44,6 +45,8 @@ export function ServiceOrderForm({
   isPending,
   onSubmit,
 }: ServiceOrderFormProps) {
+  const t = useTranslations()
+  const tServices = useTranslations('services')
   const {
     register,
     handleSubmit,
@@ -96,7 +99,7 @@ export function ServiceOrderForm({
   return (
     <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
       <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm">
-        <p className="font-medium text-slate-900">ملخص الطلب</p>
+        <p className="font-medium text-slate-900">{tServices('orderSummary')}</p>
         <ul className="mt-2 space-y-1 text-slate-600">
           {cart.map((line) => (
             <li
@@ -112,28 +115,28 @@ export function ServiceOrderForm({
         </ul>
         <div className="mt-3 space-y-1 border-t border-slate-200 pt-2 text-slate-600">
           <div className="flex justify-between">
-            <span>المجموع</span>
+            <span>{tServices('subtotal')}</span>
             <span>{formatServicePrice(subtotal)}</span>
           </div>
           <div className="flex justify-between">
-            <span>رسوم التوصيل</span>
+            <span>{tServices('deliveryFeeLabel')}</span>
             <span>{formatServicePrice(deliveryFee)}</span>
           </div>
           <div className="flex justify-between font-semibold text-primary">
-            <span>الإجمالي</span>
+            <span>{tServices('total')}</span>
             <span>{formatServicePrice(total)}</span>
           </div>
         </div>
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="customerPhone">رقم الجوال</Label>
+        <Label htmlFor="customerPhone">{tServices('customerPhone')}</Label>
         <Input
           id="customerPhone"
           type="tel"
           dir="ltr"
           className="text-left"
-          placeholder="05xxxxxxxx"
+          placeholder={tServices('phonePlaceholder')}
           {...register('customerPhone')}
         />
         {errors.customerPhone && (
@@ -143,14 +146,14 @@ export function ServiceOrderForm({
 
       <div className="grid gap-3 sm:grid-cols-2">
         <div className="space-y-2">
-          <Label htmlFor="deliveryCity">مدينة التوصيل</Label>
+          <Label htmlFor="deliveryCity">{tServices('deliveryCity')}</Label>
           <Input id="deliveryCity" {...register('deliveryCity')} />
           {errors.deliveryCity && (
             <p className="text-sm text-red-600">{errors.deliveryCity.message}</p>
           )}
         </div>
         <div className="space-y-2">
-          <Label htmlFor="deliveryArea">منطقة التوصيل</Label>
+          <Label htmlFor="deliveryArea">{tServices('deliveryArea')}</Label>
           <Input id="deliveryArea" {...register('deliveryArea')} />
           {errors.deliveryArea && (
             <p className="text-sm text-red-600">{errors.deliveryArea.message}</p>
@@ -159,7 +162,7 @@ export function ServiceOrderForm({
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="deliveryAddress">عنوان التوصيل</Label>
+        <Label htmlFor="deliveryAddress">{tServices('deliveryAddress')}</Label>
         <Textarea id="deliveryAddress" rows={2} {...register('deliveryAddress')} />
         {errors.deliveryAddress && (
           <p className="text-sm text-red-600">{errors.deliveryAddress.message}</p>
@@ -167,12 +170,12 @@ export function ServiceOrderForm({
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="notes">ملاحظات (اختياري)</Label>
+        <Label htmlFor="notes">{tServices('notesOptional')}</Label>
         <Textarea id="notes" rows={2} {...register('notes')} />
       </div>
 
       <Button type="submit" disabled={isPending} className="w-full">
-        {isPending ? 'جاري إرسال الطلب...' : 'تأكيد الطلب'}
+        {isPending ? t('common.submittingOrder') : t('common.confirmOrder')}
       </Button>
     </form>
   )

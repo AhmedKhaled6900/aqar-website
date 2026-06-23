@@ -1,6 +1,7 @@
 'use client'
 
-import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+import { Link } from '@/i18n/navigation'
 import { MapPin, Phone, MessageCircle, ArrowRight } from 'lucide-react'
 import Image from 'next/image'
 import { Badge } from '@/components/ui/badge'
@@ -28,6 +29,8 @@ export function ServiceProviderDetailView({
   provider,
   activeListing,
 }: ServiceProviderDetailViewProps) {
+  const t = useTranslations()
+  const tServices = useTranslations('services')
   const activeCoverage = provider.coverageAreas?.filter((area) => area.isActive) ?? []
   const listings = provider.listings ?? []
   const providerListings = getProviderListings(listings)
@@ -43,16 +46,16 @@ export function ServiceProviderDetailView({
 
   const menuTitle = isListingContext
     ? usesListingMenu
-      ? `منيو ${activeListing.title}`
-      : `منيو ${provider.businessName}`
-    : `المنيو الرئيسي`
+      ? tServices('listingMenu', { title: activeListing.title })
+      : tServices('listingMenu', { title: provider.businessName })
+    : tServices('mainMenu')
 
   const menuSubtitle = isListingContext
     ? usesListingMenu
-      ? 'اختر الأصناف من منيو هذا الإعلان ثم أكمل الطلب'
-      : 'يُستخدم المنيو الرئيسي — الطلب مرتبط بهذا الإعلان'
+      ? tServices('chooseFromListingMenu')
+      : tServices('usesMainMenuForListing')
     : canOrder && hasMainMenu
-      ? 'اختر الأصناف من المنيو الرئيسي — الطلب بدون إعلان'
+      ? tServices('chooseFromMainMenu')
       : undefined
 
   return (
@@ -63,7 +66,7 @@ export function ServiceProviderDetailView({
             <Button asChild variant="ghost" size="sm" className="gap-2 px-0">
               <Link href={`/services/providers/${provider.id}`}>
                 <ArrowRight className="h-4 w-4" />
-                العودة لصفحة {provider.businessName}
+                {tServices('backToProvider', { name: provider.businessName })}
               </Link>
             </Button>
           )}
@@ -94,13 +97,13 @@ export function ServiceProviderDetailView({
               <div className="flex flex-wrap gap-2">
                 <Badge variant="secondary">{provider.category.name}</Badge>
                 {isListingContext && (
-                  <Badge variant="rent">طلب من إعلان</Badge>
+                  <Badge variant="rent">{tServices('orderFromListing')}</Badge>
                 )}
                 {!isListingContext && canOrder && hasMainMenu && (
-                  <Badge variant="outline">المنيو الرئيسي</Badge>
+                  <Badge variant="outline">{tServices('mainMenu')}</Badge>
                 )}
                 {canOrder && hasMenu && !isListingContext && (
-                  <Badge variant="rent">طلب أونلاين</Badge>
+                  <Badge variant="rent">{tServices('orderOnline')}</Badge>
                 )}
               </div>
               <h1 className="mt-2 text-3xl font-bold text-slate-900">
@@ -108,11 +111,11 @@ export function ServiceProviderDetailView({
               </h1>
               <p className="mt-1 text-sm text-slate-500">
                 {provider.businessName}
-                {activeListing ? ' — إعلان' : ''}
+                {activeListing ? ` ${tServices('listingBadge')}` : ''}
               </p>
               {isListingContext && deliveryFee > 0 && (
                 <p className="mt-2 text-sm font-medium text-primary">
-                  رسوم التوصيل: {formatServicePrice(deliveryFee)}
+                  {tServices('deliveryFeeLabel')}: {formatServicePrice(deliveryFee)}
                 </p>
               )}
               {(activeListing?.description ?? provider.description) && (
@@ -125,7 +128,9 @@ export function ServiceProviderDetailView({
 
           {activeCoverage.length > 0 && (
             <div>
-              <h2 className="mb-3 text-xl font-semibold text-slate-900">مناطق التغطية</h2>
+              <h2 className="mb-3 text-xl font-semibold text-slate-900">
+                {tServices('coverage')}
+              </h2>
               <div className="flex flex-wrap gap-2">
                 {activeCoverage.map((area) => (
                   <Badge
@@ -169,7 +174,7 @@ export function ServiceProviderDetailView({
                         <p className="font-medium text-slate-900">{item.name}</p>
                         {item.prepTimeMinutes != null && (
                           <p className="text-xs text-slate-400">
-                            ~{item.prepTimeMinutes} د
+                            {tServices('prepTime', { minutes: item.prepTimeMinutes })}
                           </p>
                         )}
                       </div>
@@ -182,7 +187,7 @@ export function ServiceProviderDetailView({
               </div>
             ) : (
               <p className="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center text-slate-500">
-                لا توجد عناصر في المنيو حالياً
+                {tServices('noMenuItems')}
               </p>
             )}
           </div>
@@ -190,10 +195,10 @@ export function ServiceProviderDetailView({
           {!activeListing && providerListings.length > 0 && (
             <div>
               <div className="mb-4">
-                <h2 className="text-xl font-semibold text-slate-900">الإعلانات</h2>
-                <p className="mt-1 text-sm text-slate-500">
-                  كل إعلان له منيو خاص — اطلب مباشرة من الإعلان
-                </p>
+                <h2 className="text-xl font-semibold text-slate-900">
+                  {tServices('listings')}
+                </h2>
+                <p className="mt-1 text-sm text-slate-500">{tServices('listingsDesc')}</p>
               </div>
               <ServiceListingsSection
                 providerId={provider.id}
@@ -209,19 +214,19 @@ export function ServiceProviderDetailView({
           {canOrder && hasMenu && (
             <div className="rounded-xl border border-primary/20 bg-primary-light/40 p-4 text-sm text-primary">
               {isListingContext
-                ? 'الطلب مرتبط بهذا الإعلان — سيظهر للبروفايدر كطلب من إعلان.'
-                : 'الطلب من المنيو الرئيسي — سيظهر للبروفايدر بدون إعلان.'}
+                ? tServices('orderHintListing')
+                : tServices('orderHintMain')}
             </div>
           )}
 
           <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-soft">
-            <h2 className="text-lg font-semibold text-slate-900">تواصل</h2>
+            <h2 className="text-lg font-semibold text-slate-900">{t('common.contact')}</h2>
             <div className="mt-4 flex flex-col gap-2">
               {provider.phone && (
                 <Button asChild variant="outline" className="w-full gap-2">
                   <a href={`tel:${provider.phone}`}>
                     <Phone className="h-4 w-4" />
-                    اتصال
+                    {t('common.call')}
                   </a>
                 </Button>
               )}
@@ -229,7 +234,7 @@ export function ServiceProviderDetailView({
                 <Button asChild className="w-full gap-2">
                   <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
                     <MessageCircle className="h-4 w-4" />
-                    واتساب
+                    {t('common.whatsapp')}
                   </a>
                 </Button>
               )}
@@ -238,7 +243,7 @@ export function ServiceProviderDetailView({
 
           {canOrder && (
             <Button asChild variant="outline" className="w-full">
-              <Link href="/account/service-orders">طلباتي</Link>
+              <Link href="/account/service-orders">{tServices('myOrders')}</Link>
             </Button>
           )}
         </aside>

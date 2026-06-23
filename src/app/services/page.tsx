@@ -1,5 +1,6 @@
 import { Suspense } from 'react'
 import type { Metadata } from 'next'
+import { getTranslations } from 'next-intl/server'
 import { ServiceFilters } from '@/components/services/service-filters'
 import { ServicesCatalog } from '@/components/services/services-catalog'
 import {
@@ -8,9 +9,12 @@ import {
 } from '@/lib/api/server'
 import type { ServiceProviderFilters } from '@/lib/types'
 
-export const metadata: Metadata = {
-  title: 'الخدمات',
-  description: 'اكتشف مقدمي الخدمة — مطاعم، كافيهات، أكل بيتي، ونقل',
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations('services')
+  return {
+    title: t('title'),
+    description: t('metaDescription'),
+  }
 }
 
 interface PageProps {
@@ -18,6 +22,7 @@ interface PageProps {
 }
 
 export default async function ServicesPage({ searchParams }: PageProps) {
+  const t = await getTranslations('services')
   const params = await searchParams
   const filters: ServiceProviderFilters = {
     page: Number(params.page) || 1,
@@ -46,10 +51,8 @@ export default async function ServicesPage({ searchParams }: PageProps) {
 
   return (
     <div className="container px-4 py-8">
-      <h1 className="mb-2 text-3xl font-bold text-slate-900">الخدمات</h1>
-      <p className="mb-6 text-slate-600">
-        مطاعم، كافيهات، أكل بيتي، ونقل في كل المناطق
-      </p>
+      <h1 className="mb-2 text-3xl font-bold text-slate-900">{t('title')}</h1>
+      <p className="mb-6 text-slate-600">{t('pageSubtitle')}</p>
 
       <div className="grid gap-6 lg:grid-cols-[280px_1fr]">
         <Suspense fallback={<div className="h-96 animate-pulse rounded-xl bg-slate-100" />}>

@@ -1,13 +1,14 @@
 'use client'
 
 import { LayoutGrid, List, Map } from 'lucide-react'
+import { useTranslations } from 'next-intl'
+import { Link } from '@/i18n/navigation'
 import { PropertyCard } from '@/components/property/property-card'
 import { EmptyState } from '@/components/common/empty-state'
 import { Button } from '@/components/ui/button'
 import { useUiStore } from '@/store/ui-store'
 import type { PaginatedResponse, Property, PropertyFilters } from '@/lib/types'
 import { cn, buildPropertiesPageQuery } from '@/lib/utils'
-import Link from 'next/link'
 
 interface PropertiesCatalogProps {
   initialData: PaginatedResponse<Property>
@@ -15,6 +16,8 @@ interface PropertiesCatalogProps {
 }
 
 export function PropertiesCatalog({ initialData, filters }: PropertiesCatalogProps) {
+  const t = useTranslations('properties')
+  const tCommon = useTranslations('common')
   const viewMode = useUiStore((s) => s.propertyViewMode)
   const setViewMode = useUiStore((s) => s.setPropertyViewMode)
   const { items, meta } = initialData
@@ -22,9 +25,9 @@ export function PropertiesCatalog({ initialData, filters }: PropertiesCatalogPro
   if (items.length === 0) {
     return (
       <EmptyState
-        title="لا توجد عقارات"
-        description="جرّب تغيير الفلاتر أو البحث في مدينة أخرى"
-        actionLabel="عرض جميع العقارات"
+        title={t('noProperties')}
+        description={t('emptyDescription')}
+        actionLabel={t('viewAllProperties')}
         actionHref="/properties"
       />
     )
@@ -33,12 +36,13 @@ export function PropertiesCatalog({ initialData, filters }: PropertiesCatalogPro
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <p className="text-sm text-slate-500">{meta.total} عقار</p>
+        <p className="text-sm text-slate-500">{t('propertiesCount', { count: meta.total })}</p>
         <div className="flex gap-1">
           <Button
             variant={viewMode === 'grid' ? 'default' : 'ghost'}
             size="icon"
             onClick={() => setViewMode('grid')}
+            aria-label={t('gridView')}
           >
             <LayoutGrid className="h-4 w-4" />
           </Button>
@@ -46,6 +50,7 @@ export function PropertiesCatalog({ initialData, filters }: PropertiesCatalogPro
             variant={viewMode === 'list' ? 'default' : 'ghost'}
             size="icon"
             onClick={() => setViewMode('list')}
+            aria-label={t('listView')}
           >
             <List className="h-4 w-4" />
           </Button>
@@ -53,6 +58,7 @@ export function PropertiesCatalog({ initialData, filters }: PropertiesCatalogPro
             variant={viewMode === 'map' ? 'default' : 'ghost'}
             size="icon"
             onClick={() => setViewMode('map')}
+            aria-label={t('mapView')}
           >
             <Map className="h-4 w-4" />
           </Button>
@@ -61,7 +67,7 @@ export function PropertiesCatalog({ initialData, filters }: PropertiesCatalogPro
 
       {viewMode === 'map' ? (
         <div className="flex aspect-video items-center justify-center rounded-xl border border-dashed border-slate-300 bg-slate-50 text-slate-500">
-          عرض الخريطة — قريباً
+          {t('mapComingSoon')}
         </div>
       ) : (
         <div
@@ -91,12 +97,12 @@ export function PropertiesCatalog({ initialData, filters }: PropertiesCatalogPro
                   query: buildPropertiesPageQuery(filters, meta.page - 1),
                 }}
               >
-                السابق
+                {tCommon('previous')}
               </Link>
             </Button>
           )}
           <span className="flex items-center px-4 text-sm text-slate-600">
-            صفحة {meta.page} من {meta.totalPages}
+            {tCommon('pageOf', { page: meta.page, totalPages: meta.totalPages })}
           </span>
           {meta.hasNextPage && (
             <Button asChild variant="outline">
@@ -106,7 +112,7 @@ export function PropertiesCatalog({ initialData, filters }: PropertiesCatalogPro
                   query: buildPropertiesPageQuery(filters, meta.page + 1),
                 }}
               >
-                التالي
+                {tCommon('next')}
               </Link>
             </Button>
           )}

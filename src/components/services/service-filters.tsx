@@ -1,6 +1,8 @@
 'use client'
 
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from '@/i18n/navigation'
+import { useSearchParams } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import { useCallback, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
@@ -20,6 +22,8 @@ interface ServiceFiltersProps {
 }
 
 export function ServiceFilters({ categories }: ServiceFiltersProps) {
+  const t = useTranslations('services')
+  const tCommon = useTranslations('common')
   const router = useRouter()
   const searchParams = useSearchParams()
 
@@ -45,13 +49,13 @@ export function ServiceFilters({ categories }: ServiceFiltersProps) {
 
   return (
     <aside className="space-y-4 rounded-xl border border-slate-200/80 bg-white p-4 shadow-soft">
-      <h2 className="font-semibold text-slate-900">الفلاتر</h2>
+      <h2 className="font-semibold text-slate-900">{t('filtersTitle')}</h2>
 
       <div className="space-y-2">
-        <Label>المدينة</Label>
+        <Label>{t('cityFilter')}</Label>
         <Select value={city} onValueChange={setCity}>
           <SelectTrigger>
-            <SelectValue placeholder="اختر المدينة" />
+            <SelectValue placeholder={tCommon('selectCity')} />
           </SelectTrigger>
           <SelectContent>
             {POPULAR_CITIES.map((c) => (
@@ -64,10 +68,10 @@ export function ServiceFilters({ categories }: ServiceFiltersProps) {
       </div>
 
       <div className="space-y-2">
-        <Label>المنطقة</Label>
+        <Label>{t('areaFilter')}</Label>
         <Select value={area} onValueChange={setArea}>
           <SelectTrigger>
-            <SelectValue placeholder="اختر المنطقة" />
+            <SelectValue placeholder={tCommon('selectArea')} />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="النرجس">النرجس</SelectItem>
@@ -81,7 +85,7 @@ export function ServiceFilters({ categories }: ServiceFiltersProps) {
 
       {categories.length > 0 && (
         <div className="space-y-2">
-          <Label>الفئة</Label>
+          <Label>{t('categoryLabel')}</Label>
           <ServiceCategoryChips
             categories={categories}
             selected={category || undefined}
@@ -92,10 +96,10 @@ export function ServiceFilters({ categories }: ServiceFiltersProps) {
 
       <div className="flex gap-2 border-t border-slate-200 pt-4">
         <Button onClick={applyFilters} className="flex-1">
-          تطبيق
+          {tCommon('apply')}
         </Button>
         <Button variant="outline" onClick={clearFilters}>
-          مسح
+          {tCommon('clear')}
         </Button>
       </div>
     </aside>
