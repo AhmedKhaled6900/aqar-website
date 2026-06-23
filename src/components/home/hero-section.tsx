@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import { getLocale, getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { SearchBar } from '@/components/search/search-bar'
@@ -6,6 +7,8 @@ import { Button } from '@/components/ui/button'
 import { POPULAR_CITIES } from '@/constants/cities'
 import type { FeaturedServiceListing } from '@/lib/types'
 import { Badge } from '@/components/ui/badge'
+
+const HERO_BG_IMAGE = '/38a33fee-7324-4f9d-9c5a-81853d03bd50.webp'
 
 const TRUST_KEYS = [
   'trustVerified',
@@ -31,54 +34,61 @@ export async function HeroSection({ featuredListings, totalAvailable }: HeroSect
   ).flat()
 
   return (
-    <section className="relative overflow-x-clip bg-gradient-to-b from-primary-light via-white to-white pb-8 pt-8 sm:pb-10 sm:pt-10 md:pb-16 md:pt-14">
-      <div
-        className="pointer-events-none absolute -left-32 top-0 h-96 w-96 rounded-full bg-primary/12 blur-3xl"
+    <section className="relative overflow-x-clip pb-8 pt-8 sm:pb-10 sm:pt-10 md:pb-16 md:pt-14">
+      <Image
+        src={HERO_BG_IMAGE}
+        alt=""
+        fill
+        priority
+        sizes="100vw"
+        className="object-cover object-center"
         aria-hidden
       />
       <div
-        className="pointer-events-none absolute -right-24 bottom-0 h-80 w-80 rounded-full bg-primary-muted/50 blur-3xl"
-        aria-hidden
-      />
-      <div
-        className="hero-grid-pattern pointer-events-none absolute inset-0 opacity-[0.35]"
+        className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/55"
         aria-hidden
       />
 
-      <div className="container relative min-w-0 px-4">
+      <div className="container relative z-10 min-w-0 px-4">
         <div className="mx-auto min-w-0 max-w-4xl animate-slide-up text-center">
-          <Badge className="mb-4 max-w-full whitespace-normal border-primary/20 bg-white/80 px-3 py-1.5 text-xs leading-relaxed text-primary shadow-soft sm:text-sm">
+          <Badge className="mb-4 max-w-full whitespace-normal border-white/25 bg-white/90 px-3 py-1.5 text-xs leading-relaxed text-primary shadow-soft sm:text-sm">
             🇸🇦 {t('home.badge', { appName: t('common.appNameFull') })}
           </Badge>
 
-          <h1 className="text-2xl font-bold leading-tight text-slate-900 sm:text-3xl md:text-4xl md:leading-tight lg:text-5xl">
+          <h1 className="text-2xl font-bold leading-tight text-white sm:text-3xl md:text-4xl md:leading-tight lg:text-5xl">
             {t('home.heroTitle1')}{' '}
-            <span className="bg-gradient-to-l from-primary to-primary/80 bg-clip-text text-transparent">
+            <span className="text-primary-light">
               {t('home.heroTitleHighlight')}
             </span>
             <br />
             {t('home.heroTitle2')}
           </h1>
 
-          <p className="mx-auto mt-4 max-w-2xl text-sm text-slate-600 sm:text-base md:text-lg">
+          <p className="mx-auto mt-4 max-w-2xl text-sm text-white/85 sm:text-base md:text-lg">
             {t('home.heroSubtitle')}
           </p>
 
           {totalAvailable != null && totalAvailable > 0 && (
-            <p className="mt-3 text-sm font-medium text-primary">
+            <p className="mt-3 text-sm font-medium text-primary-light">
               {t('common.propertiesAvailable', {
                 count: totalAvailable.toLocaleString(locale === 'ar' ? 'ar-SA' : 'en-US'),
               })}
             </p>
           )}
+        </div>
+      </div>
+
       {featuredListings.length > 0 && (
         <div
-          className="relative mt-8 w-full min-w-0 animate-fade-in sm:mt-10 md:mt-12"
+          className="relative z-10 mt-8 w-full min-w-0 animate-fade-in sm:mt-10 md:mt-12"
           style={{ animationDelay: '0.15s' }}
         >
           <FeaturedListingsCarousel listings={featuredListings} />
         </div>
       )}
+
+      <div className="container relative z-10 min-w-0 px-4">
+        <div className="mx-auto min-w-0 max-w-4xl animate-slide-up text-center">
           <div className="mx-auto mt-6 w-full min-w-0 sm:mt-8">
             <SearchBar variant="hero" />
           </div>
@@ -94,8 +104,8 @@ export async function HeroSection({ featuredListings, totalAvailable }: HeroSect
           </div>
 
           <div className="mt-6 w-full min-w-0">
-            <div className="hero-trust-marquee overflow-hidden rounded-full border border-slate-200/80 bg-white/70 py-2 shadow-soft">
-              <div className="hero-trust-track flex w-max gap-5 whitespace-nowrap text-sm text-slate-600">
+            <div className="hero-trust-marquee overflow-hidden rounded-full border border-white/20 bg-white/85 py-2 shadow-soft backdrop-blur-sm">
+              <div className="hero-trust-track flex w-max gap-5 whitespace-nowrap text-sm text-slate-700">
                 {trustItems.map((item, i) => (
                   <span
                     key={`${item}-${i}`}
@@ -110,8 +120,6 @@ export async function HeroSection({ featuredListings, totalAvailable }: HeroSect
           </div>
         </div>
       </div>
-
-
     </section>
   )
 }

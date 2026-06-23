@@ -8,6 +8,7 @@ import type { FeaturedServiceListing } from '@/lib/types'
 import { formatServicePrice } from '@/utils/services'
 
 const LISTINGS_MARQUEE_COPIES = 4
+const FEATURED_ACCENT = '#ee914540'
 
 interface FeaturedListingsCarouselProps {
   listings: FeaturedServiceListing[]
@@ -21,7 +22,8 @@ function ListingCard({ listing }: { listing: FeaturedServiceListing }) {
   return (
     <Link
       href={href}
-      className="group block w-[180px] shrink-0 overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-soft transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-soft-lg sm:w-[200px]"
+      className="group block w-[180px] shrink-0 overflow-hidden rounded-2xl border bg-white shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-soft-lg sm:w-[200px]"
+      style={{ borderColor: FEATURED_ACCENT }}
     >
       <div className="relative aspect-[4/3] overflow-hidden bg-slate-100">
         <Image
@@ -53,7 +55,6 @@ function ListingCard({ listing }: { listing: FeaturedServiceListing }) {
 }
 
 export function FeaturedListingsCarousel({ listings }: FeaturedListingsCarouselProps) {
-  const t = useTranslations()
   if (listings.length === 0) {
     return null
   }
@@ -62,11 +63,10 @@ export function FeaturedListingsCarousel({ listings }: FeaturedListingsCarouselP
 
   return (
     <div className="w-full min-w-0">
-      <p className="container mb-3 px-4 text-center text-sm font-medium text-slate-500">
-        {t('home.featuredListings')}
-      </p>
-
-      <div className="hero-listings-marquee w-full overflow-hidden border-y border-slate-200/80 bg-white/70 py-4 shadow-soft">
+      <div
+        className="hero-listings-marquee w-full overflow-hidden border-y py-4 shadow-soft"
+        style={{ borderColor: FEATURED_ACCENT, backgroundColor: FEATURED_ACCENT }}
+      >
         <div className="hero-listings-track flex w-max items-stretch gap-4">
           {marqueeItems.map((listing, index) => (
             <ListingCard
